@@ -1,6 +1,15 @@
+<script lang="ts" setup>
+import '@unocss/reset/tailwind-compat.css'
+</script>
+
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
+
+<style>
+.dark {
+  color-scheme: dark;
+}
+</style>
