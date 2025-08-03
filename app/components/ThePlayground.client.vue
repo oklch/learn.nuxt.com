@@ -52,6 +52,13 @@ async function startDevServer() {
   status.value = 'start'
   const devServerProcess = await wc.spawn('pnpm', ['run', 'dev'])
   stream.value = devServerProcess.output
+
+  // In dev, when doing HMR, we kill the previous process while reusing the same WebContainer
+  if (import.meta.hot) {
+    import.meta.hot.accept(() => {
+      devServerProcess.kill()
+    })
+  }
 }
 
 onMounted(() => {

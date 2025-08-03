@@ -26,7 +26,6 @@
   "devDependencies": {
     "@antfu/eslint-config": "^5.1.0",
     "@iconify-json/carbon": "^1.2.11",
-    "@iconify-json/logos": "^1.2.5",
     "@iconify-json/svg-spinners": "^1.2.2",
     "@nuxt/eslint": "^1.7.1",
     "@unocss/eslint-plugin": "^66.3.3",

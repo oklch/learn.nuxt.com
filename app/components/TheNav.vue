@@ -1,7 +1,9 @@
 <template>
-  <nav flex="~ gap-2 items-center" p="x6 y4" border="b base">
-    <div i-logos-nuxt-icon text-4xl />
-    <span text-2xl>learn.nuxt.com</span>
+  <nav flex="~ gap-2 items-center" p="x6 y3" border="b base">
+    <NuxtLink to="/" flex="~ gap-2 items-center" title="Nuxt Playground">
+      <NuxtLogo class="mt--1.8 h-1.3em" />
+      <span text-xl>Playground</span>
+    </NuxtLink>
     <div flex-auto />
     <ColorSchemeToggle />
     <NuxtLink
@@ -9,7 +11,7 @@
       href="https://github.com/oklch/learn.nuxt.com"
       target="_blank"
     >
-      <div i-logos-github-icon text-2xl />
+      <div i-carbon-logo-github text-2xl />
     </NuxtLink>
   </nav>
 </template>
