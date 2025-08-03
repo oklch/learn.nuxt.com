@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "packageManager": "pnpm@10.13.1",
+  "scripts": {
+    "dev": "nuxt dev"
+  },
+  "dependencies": {
+    "nuxt": "^4.0.1"
+  }
+}

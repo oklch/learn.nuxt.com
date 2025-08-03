@@ -1,5 +1,5 @@
 <template>
-  <div h-screen w-screen>
+  <div h-screen w-screen flex="~ col">
     <TheNav />
     <slot />
   </div>

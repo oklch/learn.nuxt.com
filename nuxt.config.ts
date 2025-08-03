@@ -11,7 +11,21 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '',
   },
+  content: {
+    experimental: { sqliteConnector: 'native' },
+  },
   compatibilityDate: '2025-07-15',
+  nitro: {
+    routeRules: {
+      '/*': {
+        cors: true,
+        headers: {
+          'Cross-Origin-Embedder-Policy': 'require-corp',
+          'Cross-Origin-Opener-Policy': 'same-origin',
+        },
+      },
+    },
+  },
   eslint: {
     config: {
       standalone: false,
@@ -19,8 +33,5 @@ export default defineNuxtConfig({
         sortConfigKeys: true,
       },
     },
-  },
-  content: {
-    experimental: { sqliteConnector: 'native' },
   },
 })
