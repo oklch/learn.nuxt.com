@@ -22,25 +22,20 @@ async function startDevServer() {
     error.value = err
   })
 
-  const rawFiles: Record<string, string> = import.meta.glob([
-    '../templates/basic/*.*',
+  const tree = globFilesToWebContainerFs('../templates/basic/', import.meta.glob([
+    '../templates/basic/**/*.*',
+    '../templates/basic/**/.*',
+    '!../.DS_Store',
     '!**/node_modules/**',
+    '!**/.nitro/**',
   ], {
     query: '?raw',
     import: 'default',
     eager: true,
-  })
-  const files = Object.fromEntries(
-    Object.entries(rawFiles).map(([path, content]) => {
-      return [path.replace('../templates/basic/', ''), {
-        file: {
-          contents: content,
-        },
-      }]
-    }),
-  )
+  }))
+
   status.value = 'mount'
-  await wc.mount(files)
+  await wc.mount(tree)
 
   status.value = 'install'
   const installProcess = await wc.spawn('pnpm', ['install'])
@@ -65,6 +60,12 @@ async function startDevServer() {
   }
 }
 
+function sendMessage() {
+  if (!iframeEl.value)
+    return
+  iframeEl.value.contentWindow!.postMessage('hello', '*')
+}
+
 onMounted(() => {
   startDevServer()
 })
@@ -80,5 +81,8 @@ onMounted(() => {
       </div>
     </div>
     <TerminalOutput :stream="stream" h="33%" of-auto />
+    <button @click="sendMessage">
+      send
+    </button>
   </div>
 </template>
