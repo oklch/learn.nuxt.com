@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { Pane, Splitpanes } from 'splitpanes'
+
 const iframeEl = useTemplateRef<HTMLIFrameElement>('iframeEl')
 
 type Status = 'init' | 'mount' | 'install' | 'start' | 'ready' | 'error'
 const status = shallowRef<Status>('init')
 const error = shallowRef<{ message: string }>()
+
+const isDragging = usePanelDragging()
+
+const panelSizeEditor = useLocalStorage('nuxt-playground-panel-editor', 30)
+const panelSizeFrame = useLocalStorage('nuxt-playground-panel-frame', 30)
 
 const stream = shallowRef<ReadableStream<string>>()
 
@@ -66,23 +73,39 @@ function sendMessage() {
   iframeEl.value.contentWindow!.postMessage('hello', '*')
 }
 
+function startDragging() {
+  isDragging.value = true
+}
+function endDragging(e: { panes: { size: number }[] }) {
+  isDragging.value = false
+  panelSizeEditor.value = e.panes[0]!.size
+  panelSizeFrame.value = e.panes[1]!.size
+}
+
 onMounted(() => {
   startDevServer()
 })
 </script>
 
 <template>
-  <div h-full>
-    <div h="67%">
-      <iframe v-show="status === 'ready'" ref="iframeEl" h-full w-full />
+  <Splitpanes class="h-full" horizontal @resize="startDragging" @resized="endDragging">
+    <Pane :size="panelSizeEditor" min-size="10">
+      [This is the editor]
+    </Pane>
+    <Pane :size="panelSizeFrame" min-size="10">
+      <iframe
+        v-show="status === 'ready'" ref="iframeEl" h-full w-full
+        :class="{
+          'pointer-events-none': isDragging,
+        }"
+      />
       <div v-if="status !== 'ready'" flex="~ col items-center justify-center" text-lg h-full w-full capitalize>
         <div i-svg-spinners-90-ring-with-bg />
         {{ status }}ing...
       </div>
-    </div>
-    <TerminalOutput :stream="stream" h="33%" of-auto />
-    <button @click="sendMessage">
-      send
-    </button>
-  </div>
+    </Pane>
+    <Pane>
+      <TerminalOutput :stream="stream" of-auto />
+    </Pane>
+  </Splitpanes>
 </template>
