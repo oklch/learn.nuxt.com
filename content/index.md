@@ -1,3 +1,3 @@
-# My First Page
+# Hello Nuxt Playground
 
-Here is some content.
+This is a `working in progress` playground to learn Nuxt.
