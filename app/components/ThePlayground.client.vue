@@ -9,8 +9,8 @@ const error = shallowRef<{ message: string }>()
 
 const isDragging = usePanelDragging()
 
-const panelSizeEditor = useLocalStorage('nuxt-playground-panel-editor', 30)
-const panelSizeFrame = useLocalStorage('nuxt-playground-panel-frame', 30)
+const panelSizeEditor = usePanelCookie('nuxt-playground-panel-editor', 30)
+const panelSizeFrame = usePanelCookie('nuxt-playground-panel-frame', 30)
 
 const stream = shallowRef<ReadableStream<string>>()
 
@@ -96,6 +96,7 @@ onMounted(() => {
         :class="{
           'pointer-events-none': isDragging,
         }"
+        allow="geolocation; microphone; camera; payment; autoplay; serial; cross-origin-isolated"
       />
       <div v-if="status !== 'ready'" flex="~ col items-center justify-center" text-lg h-full w-full capitalize>
         <div i-svg-spinners-90-ring-with-bg />

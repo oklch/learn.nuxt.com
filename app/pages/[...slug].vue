@@ -9,7 +9,7 @@ useSeoMeta({
   description: home.value?.description,
 })
 
-const leftSize = useLocalStorage('nuxt-playground-panel-left', 30)
+const leftSize = usePanelCookie('nuxt-playground-panel-left', 30)
 const isDragging = usePanelDragging()
 function startDragging() {
   isDragging.value = true
