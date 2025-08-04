@@ -1,7 +1,44 @@
 <script lang="ts" setup>
 const colorMode = useColorMode()
 
-const toggleMode = () => colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
+function toggleMode(event: MouseEvent) {
+  const nextColorMode = colorMode.value === 'light' ? 'dark' : 'light'
+  const isAppearanceTransition = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (!isAppearanceTransition) {
+    colorMode.value = nextColorMode
+    return
+  }
+  const [x, y] = [event.clientX, event.clientY]
+  const endRadius = Math.hypot(
+    Math.max(x, innerWidth - x),
+    Math.max(y, innerHeight - y),
+  )
+  const transition = document.startViewTransition(async () => {
+    colorMode.value = nextColorMode
+    await nextTick()
+  })
+  transition.ready
+    .then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ]
+      document.documentElement.animate(
+        {
+          clipPath: colorMode.value === 'dark'
+            ? [...clipPath].reverse()
+            : clipPath,
+        },
+        {
+          duration: 400,
+          easing: 'ease-out',
+          pseudoElement: colorMode.value === 'dark'
+            ? '::view-transition-old(root)'
+            : '::view-transition-new(root)',
+        },
+      )
+    })
+}
 </script>
 
 <template>
