@@ -23,7 +23,7 @@ function endDragging(e: { panes: { size: number }[] }) {
 <template>
   <Splitpanes class="flex-grow" @resize="startDragging" @resized="endDragging">
     <Pane :size="leftSize" :min-size="10">
-      <PanelGuide :home="home" />
+      <PanelGuide :home="home" :size="100 - leftSize" />
     </Pane>
     <Pane>
       <ThePlayground />

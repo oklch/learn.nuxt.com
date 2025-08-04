@@ -7,9 +7,7 @@ const { stream } = defineProps<{
 }>()
 
 const root = useTemplateRef<HTMLDivElement>('root')
-const terminal = new Terminal({
-  lineHeight: 0.9,
-})
+const terminal = new Terminal()
 
 function read() {
   if (!stream)

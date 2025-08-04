@@ -31,10 +31,7 @@ async function startDevServer() {
 
   const tree = globFilesToWebContainerFs('../templates/basic/', import.meta.glob([
     '../templates/basic/**/*.*',
-    '../templates/basic/**/.*',
-    '!../.DS_Store',
-    '!**/node_modules/**',
-    '!**/.nitro/**',
+    '../templates/basic/**/.npmrc',
   ], {
     query: '?raw',
     import: 'default',
@@ -92,7 +89,7 @@ onMounted(() => {
         <span text-sm>Preview</span>
       </div>
       <iframe
-        v-show="status === 'ready'" ref="iframeEl" h-full w-full
+        v-show="status === 'ready'" ref="iframeEl" bg-transparent h-full w-full
         :class="{
           'pointer-events-none': isDragging,
         }"
