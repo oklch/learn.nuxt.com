@@ -16,8 +16,16 @@ export default defineConfig({
     ['icon-btn', 'inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-teal-600'],
     ['border-base', 'border-gray-200 dark:border-gray-800'],
     ['bg-active', 'bg-gray:10'],
-    ['bg-base', 'bg-white dark:bg-[#020420]']
+    ['bg-faded', 'bg-gray:5'],
+    ['bg-base', 'bg-white dark:bg-[#020420]'],
   ],
+  theme: {
+    colors: {
+      primary: {
+        DEFAULT: '#00DC82',
+      },
+    },
+  },
   presets: [
     presetWind4(),
     presetAttributify(),

@@ -23,9 +23,7 @@ function endDragging(e: { panes: { size: number }[] }) {
 <template>
   <Splitpanes class="flex-grow" @resize="startDragging" @resized="endDragging">
     <Pane :size="leftSize" :min-size="10">
-      <article class="p4 prose">
-        <ContentRenderer v-if="home" :value="home" />
-      </article>
+      <PanelGuide :home="home" />
     </Pane>
     <Pane>
       <ThePlayground />

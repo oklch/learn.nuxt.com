@@ -1,6 +1,6 @@
 <template>
-  <div h-screen w-screen flex="~ col">
+  <main h-screen w-screen flex="~ col">
     <TheNav />
     <slot />
-  </div>
+  </main>
 </template>

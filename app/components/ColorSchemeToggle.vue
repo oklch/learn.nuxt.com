@@ -46,6 +46,6 @@ function toggleMode(event: MouseEvent) {
     class="p-2 rounded hover:bg-active"
     @click="toggleMode"
   >
-    <div class="i-carbon-sun dark:i-carbon-moon" />
+    <div class="i-ph-sun-dim-duotone dark:i-ph-moon-stars-duotone text-2xl" />
   </button>
 </template>

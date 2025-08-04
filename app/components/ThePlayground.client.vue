@@ -67,12 +67,6 @@ async function startDevServer() {
   }
 }
 
-function sendMessage() {
-  if (!iframeEl.value)
-    return
-  iframeEl.value.contentWindow!.postMessage('hello', '*')
-}
-
 function startDragging() {
   isDragging.value = true
 }
@@ -90,9 +84,13 @@ onMounted(() => {
 <template>
   <Splitpanes class="h-full" horizontal @resize="startDragging" @resized="endDragging">
     <Pane :size="panelSizeEditor" min-size="10">
-      [This is the editor]
+      <PanelEditor />
     </Pane>
     <Pane :size="panelSizeFrame" min-size="10">
+      <div flex="~ gap-2 items-center" border="b base dashed" bg-faded px4 py2>
+        <div i-ph-globe-duotone />
+        <span text-sm>Preview</span>
+      </div>
       <iframe
         v-show="status === 'ready'" ref="iframeEl" h-full w-full
         :class="{
@@ -105,7 +103,7 @@ onMounted(() => {
       </div>
     </Pane>
     <Pane>
-      <TerminalOutput :stream="stream" of-auto />
+      <PanelTerminal :stream="stream" of-auto />
     </Pane>
   </Splitpanes>
 </template>
