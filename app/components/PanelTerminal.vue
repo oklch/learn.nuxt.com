@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
 import '@xterm/xterm/css/xterm.css'
 
@@ -8,6 +9,8 @@ const { stream } = defineProps<{
 
 const root = useTemplateRef<HTMLDivElement>('root')
 const terminal = new Terminal()
+const fitAddon = new FitAddon()
+terminal.loadAddon(fitAddon)
 
 function read() {
   if (!stream)
@@ -31,18 +34,21 @@ watch(() => stream, (newStream) => {
   }
 }, { flush: 'sync', immediate: true })
 
+useResizeObserver(root, useDebounceFn(() => fitAddon.fit(), 200))
+
 onMounted(() => {
   terminal.open(root.value!)
   terminal.write('\n')
+  fitAddon.fit()
 })
 </script>
 
 <template>
-  <div of-auto>
+  <div h-full grid="~ rows-[min-content_1fr]">
     <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
       <div i-ph-terminal-window-duotone />
       <span text-sm>Terminal</span>
     </div>
-    <div ref="root" />
+    <div ref="root" h-full w-full of-hidden />
   </div>
 </template>

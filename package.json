@@ -18,6 +18,7 @@
     "@vueuse/core": "^13.6.0",
     "@vueuse/nuxt": "^13.6.0",
     "@webcontainer/api": "^1.6.1",
+    "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "nuxt": "^4.0.1",
     "splitpanes": "3.1.5",
