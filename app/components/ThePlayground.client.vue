@@ -12,6 +12,11 @@ const isDragging = usePanelDragging()
 const panelSizeEditor = usePanelCookie('nuxt-playground-panel-editor', 30)
 const panelSizeFrame = usePanelCookie('nuxt-playground-panel-frame', 30)
 
+const { iframeLocation, wcUrl } = usePlayground()
+// auto update inputUrl when location value changed
+const inputUrl = ref<string>('')
+syncRef(computed(() => iframeLocation.value.fullPath), inputUrl, { direction: 'ltr' })
+
 const stream = shallowRef<ReadableStream<string>>()
 
 async function startDevServer() {
@@ -21,7 +26,10 @@ async function startDevServer() {
     // We need the main one
     if (port === 3000) {
       status.value = 'ready'
-      iframeEl.value!.src = url
+      iframeLocation.value = {
+        origin: url,
+        fullPath: '/',
+      }
     }
   })
   wc.on('error', (err) => {
@@ -64,13 +72,28 @@ async function startDevServer() {
   }
 }
 
-function startDragging() {
+const startDragging = useThrottleFn(() => {
   isDragging.value = true
-}
-function endDragging(e: { panes: { size: number }[] }) {
+}, 1000)
+function endDragging(e: { size: number }[]) {
   isDragging.value = false
-  panelSizeEditor.value = e.panes[0]!.size
-  panelSizeFrame.value = e.panes[1]!.size
+  panelSizeEditor.value = e[0]!.size
+  panelSizeFrame.value = e[1]!.size
+}
+
+function refreshIframe() {
+  if (wcUrl.value && iframeEl.value) {
+    iframeEl.value.src = wcUrl.value
+    inputUrl.value = iframeLocation.value.fullPath
+  }
+}
+
+function navigate() {
+  iframeLocation.value.fullPath = inputUrl.value
+
+  const activeElement = document.activeElement
+  if (activeElement instanceof HTMLElement)
+    activeElement.blur()
 }
 
 onMounted(() => {
@@ -84,15 +107,33 @@ onMounted(() => {
       <PanelEditor />
     </Pane>
     <Pane :size="panelSizeFrame" min-size="10">
-      <div flex="~ gap-2 items-center" border="b base dashed" bg-faded px4 py2>
-        <div i-ph-globe-duotone />
-        <span text-sm>Preview</span>
+      <div border="b base dashed" px4 bg-faded flex>
+        <div flex="~ gap-2 items-center" py2>
+          <div i-ph-globe-duotone />
+          <span text-sm>Preview</span>
+        </div>
+        <div px-2 py1.5>
+          <div
+            flex="~ items-center justify-center" text-sm mx-auto px2 rounded bg-faded border="base 1 hover:gray-500/30"
+            :class="{ 'pointer-events-none': !wcUrl }"
+          >
+            <form @submit.prevent="navigate">
+              <input v-model="inputUrl" type="text" bg-transparent flex-1 focus:outline-none>
+            </form>
+            <div flex="~ items-center justify-end">
+              <button v-if="wcUrl" mx1 op-75 hover:op-100 @click="refreshIframe">
+                <div i-ph-arrow-clockwise-duotone text-sm />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <iframe
-        v-show="status === 'ready'" ref="iframeEl" bg-transparent h-full w-full
-        :class="{
-          'pointer-events-none': isDragging,
-        }"
+        v-if="wcUrl"
+        ref="iframeEl"
+        :src="wcUrl"
+        bg-transparent h-full w-full
+        :class="{ 'pointer-events-none': isDragging }"
         allow="geolocation; microphone; camera; payment; autoplay; serial; cross-origin-isolated"
       />
       <div v-if="status !== 'ready'" flex="~ col items-center justify-center" text-lg h-full w-full capitalize>
@@ -101,7 +142,7 @@ onMounted(() => {
       </div>
     </Pane>
     <Pane>
-      <PanelTerminal :stream="stream" of-auto />
+      <PanelTerminal :stream="stream" />
     </Pane>
   </Splitpanes>
 </template>

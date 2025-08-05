@@ -38,9 +38,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div flex="~ gap-2 items-center" border="b base dashed" bg-faded px4 py2>
-    <div i-ph-terminal-window-duotone />
-    <span text-sm>Terminal</span>
+  <div of-auto>
+    <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
+      <div i-ph-terminal-window-duotone />
+      <span text-sm>Terminal</span>
+    </div>
+    <div ref="root" />
   </div>
-  <div ref="root" />
 </template>

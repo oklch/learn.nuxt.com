@@ -11,21 +11,21 @@ useSeoMeta({
 
 const leftSize = usePanelCookie('nuxt-playground-panel-left', 30)
 const isDragging = usePanelDragging()
-function startDragging() {
+const startDragging = useThrottleFn(() => {
   isDragging.value = true
-}
-function endDragging(e: { panes: { size: number }[] }) {
-  leftSize.value = e.panes[0]!.size
+}, 1000)
+function endDragging(e: { size: number }[]) {
+  leftSize.value = e[0]!.size
   isDragging.value = false
 }
 </script>
 
 <template>
-  <Splitpanes class="flex-grow" @resize="startDragging" @resized="endDragging">
+  <Splitpanes @resize="startDragging" @resized="endDragging">
     <Pane :size="leftSize" :min-size="10">
-      <PanelGuide :home="home" :size="100 - leftSize" />
+      <PanelGuide :home="home" />
     </Pane>
-    <Pane>
+    <Pane :size="100 - leftSize">
       <ThePlayground />
     </Pane>
   </Splitpanes>
