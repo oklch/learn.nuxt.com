@@ -1,4 +1,10 @@
-export const usePanelDragging = () => useState('is-panel-dragging', () => false)
+export function usePanelDragging() {
+  return useState('is-panel-dragging', () => false)
+}
+
+export function useTerminalStream() {
+  return useState<ReadableStream | undefined>('terminal-stream', () => undefined)
+}
 
 export function usePanelCookie(name: string, value: number) {
   return useCookie(

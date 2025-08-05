@@ -3,19 +3,16 @@ import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
 import '@xterm/xterm/css/xterm.css'
 
-const { stream } = defineProps<{
-  stream?: ReadableStream<string>
-}>()
-
+const stream = useTerminalStream()
 const root = useTemplateRef<HTMLDivElement>('root')
 const terminal = new Terminal()
 const fitAddon = new FitAddon()
 terminal.loadAddon(fitAddon)
 
 function read() {
-  if (!stream)
+  if (!stream.value)
     return
-  const reader = stream.getReader()
+  const reader = stream.value.getReader()
 
   function readNext() {
     reader.read().then(({ done, value }) => {
@@ -28,7 +25,7 @@ function read() {
   readNext()
 }
 
-watch(() => stream, (newStream) => {
+watch(() => stream.value, (newStream) => {
   if (newStream) {
     read()
   }
@@ -36,10 +33,14 @@ watch(() => stream, (newStream) => {
 
 useResizeObserver(root, useDebounceFn(() => fitAddon.fit(), 200))
 
-onMounted(() => {
-  terminal.open(root.value!)
-  terminal.write('\n')
-  fitAddon.fit()
+// not use mount because hydration issue, root is null when mounted
+const stop = watch(root, () => {
+  if (root.value) {
+    terminal.open(root.value)
+    terminal.write('\n')
+    fitAddon.fit()
+    stop()
+  }
 })
 </script>
 

@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <div flex="~ gap-2 items-center" border="b base dashed" bg-faded px4 py2>
+  <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
     <div i-ph-book-duotone />
     <span text-sm>Guide</span>
   </div>
