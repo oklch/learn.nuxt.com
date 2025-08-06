@@ -1,7 +1,7 @@
 import { VirtualFile } from '~/structures/VirtualFile'
 import { filesToWebContainerFs } from './utils'
 
-export function loadTemplate() {
+export default function load() {
   const rawFiles: Record<string, string> = import.meta.glob([
     './basic/**/*.*',
     './basic/**/.npmrc',

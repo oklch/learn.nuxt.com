@@ -26,5 +26,5 @@ export const usePlaygroundStore = defineStore('playground', () => {
   const error = shallowRef<{ message: string }>()
   const stream = ref<ReadableStream>()
 
-  return { files: ref([]), previewUrl, previewLocation, error, status, stream }
+  return { files: shallowRef([] as VirtualFile[]), previewUrl, previewLocation, error, status, stream }
 })

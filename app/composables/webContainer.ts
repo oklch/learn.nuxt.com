@@ -1,6 +1,6 @@
 import type { PlaygroundState } from '~/stores/playground'
 import { WebContainer } from '@webcontainer/api'
-import { loadTemplate } from '~/templates/basic'
+import { templates } from '~/templates'
 
 if (import.meta.server)
   throw new Error('This file should not be imported on the server')
@@ -15,7 +15,7 @@ export async function useWebContainer() {
 }
 
 export async function mountPlayground(play: PlaygroundState) {
-  const { files, tree } = loadTemplate()
+  const { files, tree } = await templates.basic()
 
   window.addEventListener('message', (event) => {
     if (event.origin !== play.previewLocation.origin)
