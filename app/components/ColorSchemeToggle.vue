@@ -5,7 +5,7 @@ function toggleMode(event: MouseEvent) {
   const nextColorMode = colorMode.value === 'light' ? 'dark' : 'light'
   const isAppearanceTransition = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (!isAppearanceTransition) {
-    colorMode.value = nextColorMode
+    colorMode.preference = nextColorMode
     return
   }
   const [x, y] = [event.clientX, event.clientY]
@@ -14,7 +14,7 @@ function toggleMode(event: MouseEvent) {
     Math.max(y, innerHeight - y),
   )
   const transition = document.startViewTransition(async () => {
-    colorMode.value = nextColorMode
+    colorMode.preference = nextColorMode
     await nextTick()
   })
   transition.ready
