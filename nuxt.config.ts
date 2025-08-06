@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
+    '@pinia/nuxt',
   ],
   devtools: { enabled: true },
   colorMode: {

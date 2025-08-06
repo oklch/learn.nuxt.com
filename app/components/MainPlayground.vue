@@ -9,42 +9,38 @@ useSeoMeta({
   description: home.value?.description,
 })
 
-const playground = useGlobalPlayground()
+const play = usePlaygroundStore()
 
-const isDragging = usePanelDragging()
-const panelSizeDocs = usePanelCookie('nuxt-playground-panel-docs', 30)
-const panelSizeEditor = usePanelCookie('nuxt-playground-panel-editor', 30)
-const panelSizePreview = usePanelCookie('nuxt-playground-panel-preview', 30)
-
+const ui = useUiState()
 const startDragging = useThrottleFn(() => {
-  isDragging.value = true
+  ui.isPanelDragging = true
 }, 1000)
 function endDraggingVertical(e: { size: number }[]) {
-  isDragging.value = false
-  panelSizeDocs.value = e[0]!.size
+  ui.isPanelDragging = false
+  ui.panelDocs = e[0]!.size
 }
 function endDraggingHorizontal(e: { size: number }[]) {
-  isDragging.value = false
-  panelSizeEditor.value = e[0]!.size
-  panelSizePreview.value = e[1]!.size
+  ui.isPanelDragging = false
+  ui.panelEditor = e[0]!.size
+  ui.panelPreview = e[1]!.size
 }
 </script>
 
 <template>
   <Splitpanes @resize="startDragging" @resized="endDraggingVertical">
-    <Pane :size="panelSizeDocs" :min-size="10">
+    <Pane :size="ui.panelDocs" :min-size="10">
       <PanelDocs :home="home" />
     </Pane>
-    <Pane :size="100 - panelSizeDocs">
+    <Pane :size="100 - ui.panelDocs">
       <Splitpanes class="h-full of-hidden" horizontal @resize="startDragging" @resized="endDraggingHorizontal">
-        <Pane :size="panelSizeEditor" min-size="10">
-          <PanelEditor :files="playground?.files" />
+        <Pane :size="ui.panelEditor" min-size="10">
+          <PanelEditor :files="play.files" />
         </Pane>
-        <Pane :size="panelSizePreview" min-size="10">
+        <Pane :size="ui.panelPreview" min-size="10">
           <PanelPreview />
         </Pane>
-        <Pane :size="100 - panelSizeEditor - panelSizePreview">
-          <PanelTerminal :stream="playground?.stream?.value" />
+        <Pane :size="100 - ui.panelEditor - ui.panelPreview">
+          <PanelTerminal :stream="play.stream" />
         </Pane>
       </Splitpanes>
     </Pane>
