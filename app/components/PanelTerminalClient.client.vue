@@ -6,9 +6,7 @@ import themeDark from 'theme-vitesse/extra/xterm-vitesse-dark.json'
 import themeLight from 'theme-vitesse/extra/xterm-vitesse-light.json'
 import '@xterm/xterm/css/xterm.css'
 
-const { stream } = defineProps<{
-  stream?: ReadableStream
-}>()
+const play = usePlaygroundStore()
 
 const colorMode = useColorMode()
 const theme = computed<ITheme>(() => {
@@ -40,9 +38,7 @@ watch(
 const fitAddon = new FitAddon()
 terminal.loadAddon(fitAddon)
 
-function read() {
-  if (!stream)
-    return
+function read(stream: ReadableStream) {
   const reader = stream.getReader()
 
   function readNext() {
@@ -56,10 +52,10 @@ function read() {
   readNext()
 }
 
-watch(() => stream, () => {
-  if (stream) {
+watch(() => play.stream, (s) => {
+  if (s) {
     try {
-      read()
+      read(s)
     }
     catch (e) {
       console.error('Terminal stream error:', e)
@@ -81,11 +77,5 @@ const stop = watch(root, () => {
 </script>
 
 <template>
-  <div h-full grid="~ rows-[min-content_1fr]">
-    <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
-      <div i-ph-terminal-window-duotone />
-      <span text-sm>Terminal</span>
-    </div>
-    <div ref="root" h-full w-full of-hidden />
-  </div>
+  <div ref="root" h-full w-full of-hidden />
 </template>

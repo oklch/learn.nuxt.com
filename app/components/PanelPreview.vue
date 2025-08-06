@@ -1,15 +1,14 @@
 <script setup lang="ts">
-const iframeEl = useTemplateRef<HTMLIFrameElement>('iframeEl')
+const inner = useTemplateRef<{ iframe?: Ref<HTMLIFrameElement | undefined> }>('inner')
 
-const ui = useUiState()
 const play = usePlaygroundStore()
 // auto update inputUrl when location value changed
 const inputUrl = ref<string>('')
 syncRef(computed(() => play.previewLocation.fullPath), inputUrl, { direction: 'ltr' })
 
 function refreshIframe() {
-  if (play.previewUrl && iframeEl.value) {
-    iframeEl.value.src = play.previewUrl
+  if (play.previewUrl && inner.value?.iframe?.value) {
+    inner.value.iframe.value.src = play.previewUrl
     inputUrl.value = play.previewLocation.fullPath
   }
 }
@@ -21,8 +20,6 @@ function navigate() {
   if (activeElement instanceof HTMLElement)
     activeElement.blur()
 }
-
-onMounted(() => mountPlayground(play))
 </script>
 
 <template>
@@ -48,17 +45,6 @@ onMounted(() => mountPlayground(play))
         </div>
       </div>
     </div>
-    <iframe
-      v-if="play.previewUrl"
-      ref="iframeEl"
-      :src="play.previewUrl"
-      class="bg-transparent h-full w-full"
-      :class="{ 'pointer-events-none': ui.isPanelDragging }"
-      allow="geolocation; microphone; camera; payment; autoplay; serial; cross-origin-isolated"
-    />
-    <div v-if="play.status !== 'ready'" flex="~ col items-center justify-center" text-lg h-full w-full capitalize>
-      <div i-svg-spinners-90-ring-with-bg />
-      {{ play.status }}ing...
-    </div>
+    <PanelPreviewClient ref="inner" />
   </div>
 </template>
