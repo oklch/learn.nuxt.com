@@ -1,4 +1,11 @@
-export function usePlayground() {
+import { loadTemplate } from '~/templates/basic'
+
+if (import.meta.server)
+  throw new Error('This file should not be imported on the server')
+
+export type PlaygroundInstance = ReturnType<typeof createPlayground>
+
+export function createPlayground() {
   const previewLocation = ref({
     origin: '',
     fullPath: '',
@@ -24,19 +31,20 @@ export function usePlayground() {
   type Status = 'init' | 'mount' | 'install' | 'start' | 'ready' | 'error'
   const status = shallowRef<Status>('init')
   const error = shallowRef<{ message: string }>()
-  const stream = useTerminalStream()
+  const stream = ref<ReadableStream>()
 
-  const tree = globFilesToWebContainerFs('../templates/basic/', import.meta.glob([
-    '../templates/basic/**/*.*',
-    '../templates/basic/**/.npmrc',
-  ], {
-    query: '?raw',
-    import: 'default',
-    eager: true,
-  }))
+  const {
+    files,
+    tree,
+  } = loadTemplate()
 
   async function mount() {
     const wc = await useWebContainer()
+
+    files.forEach((file) => {
+      file.wc = wc
+    })
+
     wc.on('server-ready', (port, url) => {
     // Nuxt listen to multiple ports, and 'server-ready' is emitted for each of them
     // We need the main one
@@ -79,5 +87,5 @@ export function usePlayground() {
     }
   }
 
-  return { previewUrl, previewLocation, mount, status }
+  return markRaw({ files, previewUrl, previewLocation, mount, status, stream })
 }

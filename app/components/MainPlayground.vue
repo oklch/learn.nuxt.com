@@ -9,6 +9,8 @@ useSeoMeta({
   description: home.value?.description,
 })
 
+const playground = useGlobalPlayground()
+
 const isDragging = usePanelDragging()
 const panelSizeDocs = usePanelCookie('nuxt-playground-panel-docs', 30)
 const panelSizeEditor = usePanelCookie('nuxt-playground-panel-editor', 30)
@@ -34,15 +36,15 @@ function endDraggingHorizontal(e: { size: number }[]) {
       <PanelDocs :home="home" />
     </Pane>
     <Pane :size="100 - panelSizeDocs">
-      <Splitpanes class="h-full" horizontal @resize="startDragging" @resized="endDraggingHorizontal">
+      <Splitpanes class="h-full of-hidden" horizontal @resize="startDragging" @resized="endDraggingHorizontal">
         <Pane :size="panelSizeEditor" min-size="10">
-          <PanelEditor />
+          <PanelEditor :files="playground?.files" />
         </Pane>
         <Pane :size="panelSizePreview" min-size="10">
           <PanelPreview />
         </Pane>
         <Pane :size="100 - panelSizeEditor - panelSizePreview">
-          <PanelTerminal />
+          <PanelTerminal :stream="playground?.stream?.value" />
         </Pane>
       </Splitpanes>
     </Pane>

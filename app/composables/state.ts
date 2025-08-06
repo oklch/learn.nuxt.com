@@ -2,8 +2,8 @@ export function usePanelDragging() {
   return useState('is-panel-dragging', () => false)
 }
 
-export function useTerminalStream() {
-  return useState<ReadableStream | undefined>('terminal-stream', () => undefined)
+export function useGlobalPlayground() {
+  return useState<PlaygroundInstance | undefined>('playground', () => undefined)
 }
 
 export function usePanelCookie(name: string, value: number) {

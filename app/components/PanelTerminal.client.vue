@@ -3,16 +3,19 @@ import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
 import '@xterm/xterm/css/xterm.css'
 
-const stream = useTerminalStream()
+const { stream } = defineProps<{
+  stream?: ReadableStream
+}>()
+
 const root = useTemplateRef<HTMLDivElement>('root')
 const terminal = new Terminal()
 const fitAddon = new FitAddon()
 terminal.loadAddon(fitAddon)
 
 function read() {
-  if (!stream.value)
+  if (!stream)
     return
-  const reader = stream.value.getReader()
+  const reader = stream.getReader()
 
   function readNext() {
     reader.read().then(({ done, value }) => {
@@ -25,8 +28,8 @@ function read() {
   readNext()
 }
 
-watch(() => stream.value, (newStream) => {
-  if (newStream) {
+watch(() => stream, () => {
+  if (stream) {
     read()
   }
 }, { flush: 'sync', immediate: true })
