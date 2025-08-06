@@ -1,11 +1,7 @@
 <script setup lang="ts">
+// Communicate with parent window for navigation
 if (import.meta.client) {
-  console.log('Client Init')
   onMounted(() => {
-    window.addEventListener('message', (e) => {
-      console.log('got message', e)
-    })
-
     const route = useRoute()
     watch(
       () => route.fullPath,
