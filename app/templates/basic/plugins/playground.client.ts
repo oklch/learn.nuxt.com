@@ -22,4 +22,8 @@ export default defineNuxtPlugin(() => {
         break
     }
   })
+
+  window.parent.postMessage({
+    type: 'ready',
+  }, '*')
 })

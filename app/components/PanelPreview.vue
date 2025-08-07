@@ -45,7 +45,10 @@ function navigate() {
         </div>
       </div>
     </div>
-    <PanelPreviewLoading />
-    <PanelPreviewClient ref="inner" />
+    <!-- absolute because when previewUrl is not null, PanelPreviewLoading and PanelPreviewClient will both appear -->
+    <div h-full w-full relative>
+      <PanelPreviewLoading />
+      <PanelPreviewClient ref="inner" />
+    </div>
   </div>
 </template>
