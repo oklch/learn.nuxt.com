@@ -36,3 +36,6 @@ export const usePlaygroundStore = defineStore('playground', () => {
 
   return { files: shallowRef([] as VirtualFile[]), previewUrl, previewLocation, error, status, stream }
 })
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(usePlaygroundStore, import.meta.hot))

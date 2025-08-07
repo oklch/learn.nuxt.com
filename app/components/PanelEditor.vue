@@ -42,7 +42,7 @@ function onTextInput() {
       <div i-ph-text-t-duotone />
       <span text-sm>Editor</span>
     </div>
-    <div grid="~ cols-[1fr_2fr]" h-full of-auto>
+    <div grid="~ cols-[1fr_2fr]" h-full of-hidden>
       <div flex="~ col" h-full of-auto>
         <button
           v-for="file in files" :key="file.filepath"

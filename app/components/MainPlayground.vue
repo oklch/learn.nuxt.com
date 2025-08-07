@@ -45,7 +45,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
 </script>
 
 <template>
-  <Splitpanes @resize="startDragging" @resized="endDraggingVertical">
+  <Splitpanes h-full of-hidden @resize="startDragging" @resized="endDraggingVertical">
     <Pane :size="ui.panelDocs" :min-size="10" :style="panelInitDocs">
       <PanelDocs :home="home" />
     </Pane>
