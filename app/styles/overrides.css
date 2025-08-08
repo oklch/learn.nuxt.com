@@ -40,12 +40,8 @@
   --uno: border-b border-base;
 }
 
-.splitpanes--vertical .splitpanes__pane {
-  transition: none;
-}
-
-.splitpanes--horizontal .splitpanes__pane {
-  transition: none;
+.splitpanes__splitter:has(+ .pane-hidden) {
+  display: none;
 }
 
 .terminal.xterm {
