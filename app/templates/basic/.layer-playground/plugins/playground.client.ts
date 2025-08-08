@@ -1,4 +1,4 @@
-import type { FrameFunctions, ParentFunctions } from '../../../types/rpc'
+import type { FrameFunctions, ParentFunctions } from '../../../../types/rpc'
 import { createBirpc } from 'birpc'
 
 export default defineNuxtPlugin(() => {

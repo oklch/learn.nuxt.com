@@ -5,15 +5,21 @@ const { files: allFiles = [] } = defineProps<{
   files?: VirtualFile[]
 }>()
 
-const INGORE_FILES = [
+const INGORE_FILES: (string | RegExp)[] = [
   'pnpm-lock.yaml',
   'pnpm-workspace.yaml',
-  '.npmrc',
-  'tsconfig.json',
-  'server/tsconfig.json',
+  /tsconfig\.json$/, // tsconfig.json and server/tsconfig.json
+  /^\./,
 ]
 
-const files = computed(() => allFiles.filter(file => !INGORE_FILES.includes(file.filepath)))
+function isIgnored(filepath: string) {
+  return INGORE_FILES.some(pattern => typeof pattern === 'string'
+    ? filepath === pattern
+    : pattern.test(filepath),
+  )
+}
+
+const files = computed(() => allFiles.filter(file => !isIgnored(file.filepath)))
 
 const selectedFile = ref<VirtualFile>()
 

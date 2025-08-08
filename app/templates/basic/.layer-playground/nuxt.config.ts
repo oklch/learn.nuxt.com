@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   css: [
-    '~/styles/base.css',
+    '~/.layer-playground/styles/base.css',
   ],
 })
