@@ -1,19 +1,43 @@
 <script setup lang="ts">
+import type { FrameFunctions, ParentFunctions } from '~/types/rpc'
+import { createBirpc } from 'birpc'
+
 const iframeEl = useTemplateRef<HTMLIFrameElement>('iframeEl')
 
 const ui = useUiState()
 const play = usePlaygroundStore()
 const colorMode = useColorMode()
 
-function onIframeLoad() {
-  syncColorMode()
+const parentFunctions: ParentFunctions = {
+  // We wait for the client to send the ready message
+  // So we don't show the loading screen
+  onReady: () => {
+    play.status = 'ready'
+    syncColorMode()
+  },
+  onNavigate: (path: string) => {
+    play.previewLocation.fullPath = path
+  },
 }
 
+const rpc = createBirpc<FrameFunctions, ParentFunctions>(parentFunctions, {
+  post: (payload) => {
+    iframeEl.value?.contentWindow?.postMessage({
+      source: 'nuxt-playground-parent',
+      payload,
+    }, '*')
+  },
+  on: (fn) => {
+    window.addEventListener('message', (event) => {
+      if (event.data.source !== 'nuxt-playground-frame')
+        return
+      fn(event.data.payload)
+    })
+  },
+})
+
 function syncColorMode() {
-  iframeEl.value?.contentWindow?.postMessage({
-    type: 'color-mode',
-    mode: colorMode.value,
-  }, '*')
+  rpc.onColorModeChange(colorMode.value)
 }
 
 watch(
@@ -34,6 +58,5 @@ onMounted(() => mountPlayground(play, colorMode.value))
     :style="play.status === 'ready' ? '' : 'visibility: hidden;'"
     :class="{ 'pointer-events-none': ui.isPanelDragging }"
     allow="geolocation; microphone; camera; payment; autoplay; serial; cross-origin-isolated"
-    @load="onIframeLoad"
   />
 </template>

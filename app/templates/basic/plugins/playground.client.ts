@@ -1,29 +1,42 @@
+import type { FrameFunctions, ParentFunctions } from '../../../types/rpc'
+import { createBirpc } from 'birpc'
+
 export default defineNuxtPlugin(() => {
+  const frameFunctions: FrameFunctions = {
+    onColorModeChange: (colorMode) => {
+      document.documentElement.classList.toggle(
+        'dark',
+        colorMode === 'dark',
+      )
+    },
+  }
+
+  const rpc = createRpc(frameFunctions)
+
   // Communicate with parent window for navigation
   const router = useRouter()
-
   router.afterEach((to) => {
-    window.parent.postMessage({
-      type: 'update:path',
-      path: to.fullPath,
-    }, '*')
+    rpc.onNavigate(to.fullPath)
   })
 
-  window.addEventListener('message', (event) => {
-    console.log('event', event)
-    switch (event.data.type) {
-      case 'color-mode':
-        document.documentElement.classList.toggle(
-          'dark',
-          event.data.mode === 'dark',
-        )
-        break
-      default:
-        break
-    }
-  })
-
-  window.parent.postMessage({
-    type: 'ready',
-  }, '*')
+  rpc.onReady()
 })
+
+function createRpc(frameFunctions: FrameFunctions) {
+  const rpc = createBirpc<ParentFunctions, FrameFunctions>(frameFunctions, {
+    post: (payload) => {
+      window.parent.postMessage({
+        source: 'nuxt-playground-frame',
+        payload,
+      }, '*')
+    },
+    on: (fn) => {
+      window.addEventListener('message', (event) => {
+        if (event.data.source !== 'nuxt-playground-parent')
+          return
+        fn(event.data.payload)
+      })
+    },
+  })
+  return rpc
+}
