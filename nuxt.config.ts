@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
   ],
   devtools: { enabled: true },
+  app: {
+    head: {
+      titleTemplate: '%s - Nuxt Playground',
+    },
+  },
   colorMode: {
     classSuffix: '',
   },
@@ -18,7 +23,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   nitro: {
     routeRules: {
-      '**': {
+      '/**': {
         headers: {
           'Cross-Origin-Embedder-Policy': 'require-corp',
           'Cross-Origin-Opener-Policy': 'same-origin',

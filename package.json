@@ -10,8 +10,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare && pnpm -C ./app/templates/basic install && pnpm -C ./app/templates/basic prepare",
     "lint": "eslint .",
-    "format": "eslint . --fix",
-    "typecheck": "nuxt typecheck"
+    "format": "eslint . --fix"
   },
   "dependencies": {
     "@nuxt/content": "^3.6.3",
@@ -41,8 +40,7 @@
     "eslint-plugin-format": "^1.0.1",
     "theme-vitesse": "^1.0.0",
     "typescript": "^5.9.2",
-    "unocss": "^66.3.3",
-    "vue-tsc": "^3.0.5"
+    "unocss": "^66.3.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
