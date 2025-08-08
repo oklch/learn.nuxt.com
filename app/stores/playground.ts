@@ -20,6 +20,11 @@ export interface PlaygroundState {
   error: { message: string } | undefined
   status: PlaygroundStatus
   stream: ReadableStream | undefined
+  actions: PlaygroundActions
+}
+
+export interface PlaygroundActions {
+  restartServer: () => Promise<void>
 }
 
 export const usePlaygroundStore = defineStore('playground', () => {
@@ -34,7 +39,11 @@ export const usePlaygroundStore = defineStore('playground', () => {
   const error = shallowRef<{ message: string }>()
   const stream = ref<ReadableStream>()
 
-  return { files: shallowRef([] as VirtualFile[]), previewUrl, previewLocation, error, status, stream }
+  const actions = {
+    async restartServer() {},
+  }
+
+  return { files: shallowRef([] as VirtualFile[]), previewUrl, previewLocation, error, status, stream, actions }
 })
 
 if (import.meta.hot)

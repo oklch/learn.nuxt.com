@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const ui = useUiState()
+const play = usePlaygroundStore()
 </script>
 
 <template>
@@ -8,7 +9,19 @@ const ui = useUiState()
       <div i-ph-terminal-window-duotone />
       <span text-sm>Terminal</span>
       <div flex-auto />
-      <button hover="bg-active" p1 rounded @click="ui.toggleTerminal()">
+      <button
+        v-if="play.status !== 'init' && play.status !== 'mount'"
+        hover="bg-active" p1 rounded
+        title="Restart terminal"
+        @click="play.actions.restartServer()"
+      >
+        <div i-ph-arrow-clockwise-duotone />
+      </button>
+      <button
+        hover="bg-active" p1 rounded
+        title="Hide terminal"
+        @click="ui.toggleTerminal()"
+      >
         <div i-ph-x-bold />
       </button>
     </div>
