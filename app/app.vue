@@ -2,6 +2,7 @@
 import 'splitpanes/dist/splitpanes.css'
 import './styles/base.css'
 import './styles/overrides.css'
+import './styles/prose.css'
 </script>
 
 <template>

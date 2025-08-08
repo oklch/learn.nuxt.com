@@ -35,6 +35,7 @@
     "@iconify-json/svg-spinners": "^1.2.2",
     "@nuxt/eslint": "^1.7.1",
     "@unocss/eslint-plugin": "^66.3.3",
+    "@unocss/extractor-mdc": "^66.4.1",
     "@unocss/nuxt": "^66.3.3",
     "eslint": "^9.32.0",
     "eslint-plugin-format": "^1.0.1",

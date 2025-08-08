@@ -19,6 +19,16 @@ export default defineNuxtConfig({
   },
   content: {
     experimental: { sqliteConnector: 'native' },
+    build: {
+      markdown: {
+        highlight: {
+          theme: {
+            default: 'vitesse-light',
+            dark: 'vitesse-dark',
+          },
+        }
+      },
+    },
   },
   compatibilityDate: '2025-07-15',
   nitro: {

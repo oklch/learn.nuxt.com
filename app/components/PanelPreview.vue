@@ -23,13 +23,17 @@ function navigate() {
 </script>
 
 <template>
-  <div class="h-full w-full of-hidden" grid="~ rows-[min-content_1fr]">
-    <div border="b base dashed" px4 bg-faded flex>
+  <div class="h-full w-full of-hidden" :class="play.status === 'ready' ? ' grid grid-rows-[min-content_1fr]' : 'flex'">
+    <div
+      v-if="play.status === 'ready'"
+      border="b base dashed" px4 bg-faded
+      flex="~ items-center gap-2"
+    >
       <div flex="~ gap-2 items-center" py2>
         <div i-ph-globe-duotone />
         <span text-sm>Preview</span>
       </div>
-      <div px-2 py1.5>
+      <div px-2 py1>
         <div
           flex="~ items-center justify-center" text-sm mx-auto px2 rounded bg-faded border="base 1 hover:gray-500/30"
           :class="{ 'pointer-events-none': !play.previewUrl }"

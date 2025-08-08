@@ -2,7 +2,13 @@
 import { Pane, Splitpanes } from 'splitpanes'
 
 const route = useRoute()
-const { data: home } = await useAsyncData(() => queryCollection('content').path(route.path).first())
+const { data: home } = await useAsyncData(
+  `home-content-${route.path}`,
+  () => queryCollection('content').path(route.path).first(),
+  {
+    watch: [() => route.path],
+  },
+)
 
 useSeoMeta({
   title: home.value?.title,

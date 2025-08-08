@@ -1,3 +1,4 @@
+import extractorMdc from '@unocss/extractor-mdc'
 import { createLocalFontProcessor } from '@unocss/preset-web-fonts/local'
 import {
   defineConfig,
@@ -46,4 +47,12 @@ export default defineConfig({
     transformerDirectives(),
     transformerVariantGroup(),
   ],
+  extractors: [
+    extractorMdc(),
+  ],
+  content: {
+    filesystem: [
+      './content/**/*.md',
+    ],
+  },
 })
