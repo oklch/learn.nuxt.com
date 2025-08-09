@@ -5,7 +5,7 @@ import { filesToWebContainerFs } from './utils'
 export default function load(options: TemplateOptions = {}) {
   const rawInput: Record<string, string> = import.meta.glob([
     './basic/**/*.*',
-    './basic/**/.layer-playground/**/*.*',
+    './basic/**/layer-playground/**/*.*',
     './basic/**/.nuxtrc',
     './basic/**/.npmrc',
   ], {
@@ -14,7 +14,7 @@ export default function load(options: TemplateOptions = {}) {
     eager: true,
   })
 
-    const rawFiles = {
+  const rawFiles = {
     ...Object.fromEntries(
       Object.entries(rawInput)
         .map(([key, value]) => [key.replace('./basic/', ''), value]),

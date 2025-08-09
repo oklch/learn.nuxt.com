@@ -3,6 +3,7 @@ const INGORE_FILES: (string | RegExp)[] = [
   'pnpm-workspace.yaml',
   /tsconfig\.json$/, // tsconfig.json and server/tsconfig.json
   /^\./,
+  /layer-playground\/.*/,
 ]
 
 export function isFileIgnored(filepath: string) {

@@ -4,16 +4,19 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  birpc:
-    specifier: ^2.5.0
-    version: 2.5.0
-  nuxt:
-    specifier: ^3.18.1
-    version: 3.18.1(@vue/compiler-sfc@3.5.18)(typescript@5.9.2)(vite@7.1.1)
-  vue:
-    specifier: ^3.5.18
-    version: 3.5.18(typescript@5.9.2)
+importers:
+
+  .:
+    dependencies:
+      birpc:
+        specifier: ^2.5.0
+        version: 2.5.0
+      nuxt:
+        specifier: ^3.18.1
+        version: 3.18.1(@vue/compiler-sfc@3.5.18)(typescript@5.9.2)(vite@7.1.1)
+      vue:
+        specifier: ^3.5.18
+        version: 3.5.18(typescript@5.9.2)
 
 packages:
 
@@ -889,8 +892,8 @@ packages:
       - supports-color
     dev: false
 
-  /@napi-rs/wasm-runtime@1.0.2:
-    resolution: {integrity: sha512-4pSAVWEyZMgE9q+SYkHK+UhYRo4o7P+NYZSsuuhU0wKNzV09ujaxerrbzgv6zyLoWIggJb8ql/KRzv0H9WuAZQ==}
+  /@napi-rs/wasm-runtime@1.0.3:
+    resolution: {integrity: sha512-rZxtMsLwjdXkMUGC3WwsPwLNVqVqnTJT6MNIB6e+5fhMcSCPP0AOsNWuMQ5mdCq6HNjs/ZeWAEchpqeprqBD2Q==}
     requiresBuild: true
     dependencies:
       '@emnapi/core': 1.4.5
@@ -1388,7 +1391,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.2
+      '@napi-rs/wasm-runtime': 1.0.3
     dev: false
     optional: true
 
@@ -1524,7 +1527,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.2
+      '@napi-rs/wasm-runtime': 1.0.3
     dev: false
     optional: true
 
@@ -1664,7 +1667,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.2
+      '@napi-rs/wasm-runtime': 1.0.3
     dev: false
     optional: true
 

@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@pinia/nuxt',
   ],
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   app: {
     head: {
       titleTemplate: '%s - Nuxt Playground',
