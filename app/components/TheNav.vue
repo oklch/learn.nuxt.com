@@ -14,7 +14,7 @@ const play = usePlaygroundStore()
       p2 rounded
       hover="bg-active"
       title="Download as ZIP"
-      @click="play.actions.downloadZip()"
+      @click="play.downloadZip()"
     >
       <div i-ph-download-duotone text-2xl />
     </button>
