@@ -25,6 +25,7 @@ export interface PlaygroundState {
 
 export interface PlaygroundActions {
   restartServer: () => Promise<void>
+  downloadZip: () => Promise<void>
 }
 
 export const usePlaygroundStore = defineStore('playground', () => {
@@ -41,6 +42,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
 
   const actions = {
     async restartServer() {},
+    async downloadZip() {},
   }
 
   return { files: shallowRef([] as VirtualFile[]), previewUrl, previewLocation, error, status, stream, actions }
