@@ -73,6 +73,18 @@ const icon = computed(() => {
     return getFileIcon(props.name!)
   }
 })
+
+const folderCaret = computed(() => {
+  const icon = 'i-ph-caret-right transition-transform duration-300 op50'
+  if (props.directory) {
+    return isDirectoryOpen.value
+      ? `${icon} rotate-90`
+      : icon
+  }
+  else {
+    return 'opacity-0'
+  }
+})
 </script>
 
 <template>
@@ -80,16 +92,17 @@ const icon = computed(() => {
     <button
       v-if="name"
       text-sm px2 py1 text-left w-full
-      flex="~ gap-2 items-center"
+      flex="~ gap-1 items-center"
       hover="bg-active"
       :class="isFileSelected ? 'bg-active' : 'text-faded'"
       :style="{
-        paddingLeft: `${0.5 + 0.8 * (props.depth)}rem`,
+        paddingLeft: `${0.2 + 0.8 * (props.depth)}rem`,
       }"
       @click="handleClick"
     >
+      <div :class="folderCaret" flex-none h-4 w-4 />
       <div :class="icon" flex-none h-4 w-4 light="brightness-60 hue-rotate-180 invert-100 saturate-200" scale-110 />
-      {{ name }}
+      <span ml1>{{ name }}</span>
     </button>
     <div v-if="directory" v-show="isDirectoryOpen">
       <PanelEditorFileSystemTree
