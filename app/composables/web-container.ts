@@ -80,7 +80,7 @@ export async function mountPlayground(play: PlaygroundState, colorMode: string) 
       throw new Error('Unable to run pnpm install')
     }
     play.status = 'start'
-    processDev = await wc.spawn('pnpm', ['run', 'dev'])
+    processDev = await wc.spawn('pnpm', ['run', 'dev', '--no-qr'])
     play.stream = processDev.output
   }
 

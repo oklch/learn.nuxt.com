@@ -12,7 +12,7 @@ defineProps<{
       <div i-ph-book-duotone />
       <span text-sm>Guide</span>
     </div>
-    <article class="p6 of-auto prose">
+    <article class="p6 max-w-none of-auto prose">
       <ContentRenderer v-if="home" :value="home" />
     </article>
   </div>

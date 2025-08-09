@@ -50,7 +50,7 @@ function onTextInput() {
       <textarea
         v-model="input"
         border="l base"
-        font-mono p4 bg-transparent h-full w-full
+        font-mono p4 bg-transparent h-full w-full resize-none
         @input="onTextInput"
       />
     </div>
