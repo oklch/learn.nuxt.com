@@ -31,31 +31,66 @@ const sortedDirectory = computed(() => props.directory && Object.fromEntries(
     return aName.localeCompare(bName)
   }),
 ))
+
+const FILE_ICONS = [
+  {
+    match: /\.vue$/,
+    icon: 'i-catppuccin-vue',
+  },
+  {
+    match: /nuxt\.config\.\w+$/,
+    icon: 'i-catppuccin-nuxt',
+  },
+  {
+    match: /package\.json$/,
+    icon: 'i-catppuccin-npm',
+  },
+  {
+    match: /\.[mc]?tsx?$/,
+    icon: 'i-catppuccin-typescript',
+  },
+  {
+    match: /\.[mc]?jsx?$/,
+    icon: 'i-catppuccin-javascript',
+  },
+]
+
+function getFileIcon(filepath: string) {
+  for (const { match, icon } of FILE_ICONS) {
+    if (match.test(filepath))
+      return icon
+  }
+  return 'i-catppuccin-file'
+}
+
+const icon = computed(() => {
+  if (props.directory) {
+    return isDirectoryOpen.value
+      ? 'i-catppuccin-folder-open'
+      : 'i-catppuccin-folder'
+  }
+  else {
+    return getFileIcon(props.name!)
+  }
+})
 </script>
 
 <template>
   <div of-auto>
-    <div
+    <button
       v-if="name"
+      text-sm px2 py1 text-left w-full
+      flex="~ gap-2 items-center"
       hover="bg-active"
+      :class="isFileSelected ? 'bg-active' : 'text-faded'"
       :style="{
-        paddingLeft: `${0.5 * (props.depth)}rem`,
+        paddingLeft: `${0.5 + 0.8 * (props.depth)}rem`,
       }"
       @click="handleClick"
     >
-      <button
-        px2 py1 text-left
-        :class="{
-          'text-primary': isFileSelected,
-        }"
-        flex="~ gap-2 items-center"
-      >
-        <div v-if="directory && !isDirectoryOpen" i-ph-folder-duotone />
-        <div v-if="directory && isDirectoryOpen" i-ph-folder-open-duotone />
-        <div v-if="!directory" i-ph-file-duotone />
-        {{ name }}
-      </button>
-    </div>
+      <div :class="icon" flex-none h-4 w-4 light="brightness-60 hue-rotate-180 invert-100 saturate-200" scale-110 />
+      {{ name }}
+    </button>
     <div v-if="directory" v-show="isDirectoryOpen">
       <PanelEditorFileSystemTree
         v-for="(child, chileName) in sortedDirectory"
