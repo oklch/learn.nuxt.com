@@ -34,34 +34,36 @@ const sortedDirectory = computed(() => props.directory && Object.fromEntries(
 </script>
 
 <template>
-  <div
-    v-if="name"
-    hover="bg-active"
-    :style="{
-      paddingLeft: `${0.5 * (props.depth)}rem`,
-    }"
-    @click="handleClick"
-  >
-    <button
-      px2 py1 text-left
-      :class="{
-        'text-primary': isFileSelected,
+  <div of-auto>
+    <div
+      v-if="name"
+      hover="bg-active"
+      :style="{
+        paddingLeft: `${0.5 * (props.depth)}rem`,
       }"
-      flex="~ gap-2 items-center"
+      @click="handleClick"
     >
-      <div v-if="directory && !isDirectoryOpen" i-ph-folder-duotone />
-      <div v-if="directory && isDirectoryOpen" i-ph-folder-open-duotone />
-      <div v-if="!directory" i-ph-file-duotone />
-      {{ name }}
-    </button>
-  </div>
-  <div v-if="directory" v-show="isDirectoryOpen">
-    <PanelEditorFileSystemTree
-      v-for="(child, chileName) in sortedDirectory"
-      :key="chileName"
-      :name="chileName.toString()"
-      v-bind="child"
-      :depth="depth + 1"
-    />
+      <button
+        px2 py1 text-left
+        :class="{
+          'text-primary': isFileSelected,
+        }"
+        flex="~ gap-2 items-center"
+      >
+        <div v-if="directory && !isDirectoryOpen" i-ph-folder-duotone />
+        <div v-if="directory && isDirectoryOpen" i-ph-folder-open-duotone />
+        <div v-if="!directory" i-ph-file-duotone />
+        {{ name }}
+      </button>
+    </div>
+    <div v-if="directory" v-show="isDirectoryOpen">
+      <PanelEditorFileSystemTree
+        v-for="(child, chileName) in sortedDirectory"
+        :key="chileName"
+        :name="chileName.toString()"
+        v-bind="child"
+        :depth="depth + 1"
+      />
+    </div>
   </div>
 </template>

@@ -40,6 +40,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
             : '',
         ],
       })
+      files.value = _files
 
       // Inject .nuxtrc so that we can have the color mode on initial load
       if (colorMode.value === 'dark') {
@@ -56,7 +57,6 @@ export const usePlaygroundStore = defineStore('playground', () => {
       _files.forEach((file) => {
         file.wc = wc
       })
-      files.value = _files
 
       wc.on('server-ready', (port, url) => {
         // Nuxt listen to multiple ports, and 'server-ready' is emitted for each of them

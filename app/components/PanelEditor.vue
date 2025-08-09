@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { VirtualFile } from '~/structures/VirtualFile'
+import { Pane, Splitpanes } from 'splitpanes'
 import { filesToVirtualFsTree } from '~/templates/utils'
 
 const { files: allFiles = [] } = defineProps<{
@@ -20,13 +21,31 @@ watchEffect(() => {
 })
 
 watch(() => play.fileSelected, () => {
-  input.value = play.fileSelected?.read()
+  input.value = play.fileSelected?.read() || ''
 })
 
 function onTextInput() {
   if (input.value != null)
     play.fileSelected?.write(input.value)
 }
+
+const ui = useUiState()
+const startDragging = useThrottleFn(() => {
+  ui.isPanelDragging = true
+}, 1000)
+function endDragging(e: { size: number }[]) {
+  ui.isPanelDragging = false
+  ui.panelFileTree = e[0]!.size
+}
+
+// For panes size initialization on SSR
+const isMounted = useMounted()
+const panelInitFileTree = computed(() => isMounted.value || {
+  width: `${ui.panelFileTree}%`,
+})
+const panelInitEditor = computed(() => isMounted.value || {
+  width: `${100 - ui.panelFileTree}%`,
+})
 </script>
 
 <template>
@@ -35,16 +54,30 @@ function onTextInput() {
       <div i-ph-text-t-duotone />
       <span text-sm>Editor</span>
     </div>
-    <div grid="~ cols-[1fr_2fr]" h-full of-hidden>
-      <div flex="~ col" h-full of-auto>
+    <Splitpanes
+      h-full of-hidden
+      @resize="startDragging"
+      @resized="endDragging"
+    >
+      <Pane
+        flex="~ col" h-full of-auto
+        :size="ui.panelFileTree"
+        :style="panelInitFileTree"
+      >
         <PanelEditorFileSystemTree :directory="directory" :depth="-1" />
-      </div>
-      <textarea
-        v-model="input"
-        border="l base"
-        font-mono p4 bg-transparent h-full w-full resize-none
-        @input="onTextInput"
-      />
-    </div>
+      </Pane>
+      <PaneSplitter />
+      <Pane
+        :size="100 - ui.panelFileTree"
+        :style="panelInitEditor"
+      >
+        <textarea
+          v-model="input"
+          border="l base"
+          font-mono p4 bg-transparent h-full w-full resize-none
+          @input="onTextInput"
+        />
+      </Pane>
+    </Splitpanes>
   </div>
 </template>
