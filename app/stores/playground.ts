@@ -23,6 +23,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
   const status = shallowRef<PlaygroundStatus>('init')
   const error = shallowRef<{ message: string }>()
   const stream = shallowRef<ReadableStream>()
+  const fileSelected = shallowRef<VirtualFile>()
 
   let processInstall: WebContainerProcess | undefined
   let processDev: WebContainerProcess | undefined
@@ -165,6 +166,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
     status,
     error,
     stream,
+    fileSelected,
     restartServer: startServer,
     downloadZip,
   }

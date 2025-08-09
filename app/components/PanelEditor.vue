@@ -1,30 +1,31 @@
 <script setup lang="ts">
 import type { VirtualFile } from '~/structures/VirtualFile'
+import { filesToVirtualFsTree } from '~/templates/utils'
 
 const { files: allFiles = [] } = defineProps<{
   files?: VirtualFile[]
 }>()
 
 const files = computed(() => allFiles.filter(file => !isFileIgnored(file.filepath)))
+const directory = computed(() => filesToVirtualFsTree(files.value))
 
-const selectedFile = ref<VirtualFile>()
-
-// Select the first file by default.
-watchEffect(() => {
-  if (selectedFile.value == null && files.value.length > 0)
-    selectFile(files.value[0]!)
-})
+const play = usePlaygroundStore()
 
 const input = ref<string>()
 
-function selectFile(file: VirtualFile) {
-  selectedFile.value = file
-  input.value = file.read()
-}
+// Select the first file by default.
+watchEffect(() => {
+  if (play.fileSelected == null && files.value.length > 0)
+    play.fileSelected = files.value[0]
+})
+
+watch(() => play.fileSelected, () => {
+  input.value = play.fileSelected?.read()
+})
 
 function onTextInput() {
   if (input.value != null)
-    selectedFile?.value?.write(input.value)
+    play.fileSelected?.write(input.value)
 }
 </script>
 
@@ -36,16 +37,7 @@ function onTextInput() {
     </div>
     <div grid="~ cols-[1fr_2fr]" h-full of-hidden>
       <div flex="~ col" h-full of-auto>
-        <button
-          v-for="file in files" :key="file.filepath"
-          px2 py1 hover="bg-active" text-left
-          :class="{
-            'text-primary': file.filepath === selectedFile?.filepath,
-          }"
-          @click="selectFile(file)"
-        >
-          {{ file.filepath }}
-        </button>
+        <PanelEditorFileSystemTree :directory="directory" :depth="-1" />
       </div>
       <textarea
         v-model="input"
