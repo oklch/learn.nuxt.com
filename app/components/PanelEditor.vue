@@ -71,10 +71,11 @@ const panelInitEditor = computed(() => isMounted.value || {
         :size="100 - ui.panelFileTree"
         :style="panelInitEditor"
       >
-        <textarea
+        <PanelEditorMonaco
+          v-if="play.fileSelected"
           v-model="input"
-          border="l base"
-          font-mono p4 bg-transparent h-full w-full resize-none
+          class="h-full w-full"
+          :filepath="play.fileSelected.filepath"
           @input="onTextInput"
         />
       </Pane>
