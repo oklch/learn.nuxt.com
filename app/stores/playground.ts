@@ -1,6 +1,5 @@
 import type { WebContainer, WebContainerProcess } from '@webcontainer/api'
 import type { VirtualFile } from '~/structures/VirtualFile'
-import { templates } from '~/templates'
 
 export const PlaygroundStatusOrder = [
   'init',
@@ -31,6 +30,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
   // Mount the playground on client side
   if (import.meta.client) {
     async function mount() {
+      const colorMode = useColorMode()
       const { templates } = await import('../templates')
       const { files: _files, tree } = await templates.basic({
         nuxtrc: [
