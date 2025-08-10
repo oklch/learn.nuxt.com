@@ -58,6 +58,9 @@ const stop = watch(monacoEl, (el) => {
       enabled: false,
     },
   })
+  editor.onDidChangeModelContent(() => {
+    code.value = editor.getValue()
+  })
   watch(
     () => filepath,
     () => {

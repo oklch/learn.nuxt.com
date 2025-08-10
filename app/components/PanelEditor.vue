@@ -24,10 +24,10 @@ watch(() => play.fileSelected, () => {
   input.value = play.fileSelected?.read() || ''
 })
 
-function onTextInput() {
-  if (input.value != null)
-    play.fileSelected?.write(input.value)
-}
+watch(input, (currentInput, previousInput) => {
+  if (currentInput != null && currentInput !== previousInput)
+    play.fileSelected?.write(currentInput)
+})
 
 const ui = useUiState()
 const startDragging = useThrottleFn(() => {
@@ -60,7 +60,7 @@ const panelInitEditor = computed(() => isMounted.value || {
       @resized="endDragging"
     >
       <Pane
-        flex="~ col" h-full of-auto
+        flex="~ col" py1 h-full of-auto
         :size="ui.panelFileTree"
         :style="panelInitFileTree"
       >
@@ -76,7 +76,6 @@ const panelInitEditor = computed(() => isMounted.value || {
           v-model="input"
           class="h-full w-full"
           :filepath="play.fileSelected.filepath"
-          @input="onTextInput"
         />
       </Pane>
     </Splitpanes>
