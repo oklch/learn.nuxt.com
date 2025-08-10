@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { shikiToMonaco } from '@shikijs/monaco'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import { getShiki } from '~/monaco/shiki'
 import '../monaco/worker'
 
 const { filepath } = defineProps<{
@@ -29,6 +31,12 @@ const language = computed(() => {
   }
 })
 
+const colorMode = useColorMode()
+const theme = computed(() => colorMode.value === 'dark'
+  ? 'vitesse-dark'
+  : 'vitesse-light',
+)
+
 function getModel(filepath: string) {
   let model: monaco.editor.ITextModel
   if (!models.has(filepath)) {
@@ -46,17 +54,32 @@ function getModel(filepath: string) {
   return model
 }
 
-const stop = watch(monacoEl, (el) => {
+const stop = watch(monacoEl, async (el) => {
   if (!el)
     return
   stop()
+  const shiki = await getShiki()
+  shikiToMonaco(shiki, monaco)
   const editor = monaco.editor.create(el, {
     model: getModel(filepath),
-    theme: 'vs-dark',
+    theme: theme.value,
+    fontSize: 14,
+    bracketPairColorization: {
+      enabled: false,
+    },
+    glyphMargin: false,
     automaticLayout: true,
+    folding: false,
+    lineDecorationsWidth: 10,
+    lineNumbersMinChars: 3,
+    fontFamily: 'DM Mono, monospace',
     minimap: {
       enabled: false,
     },
+    padding: {
+      top: 8,
+    },
+    overviewRulerLanes: 0,
   })
   editor.onDidChangeModelContent(() => {
     code.value = editor.getValue()
@@ -68,6 +91,8 @@ const stop = watch(monacoEl, (el) => {
     },
   )
 })
+
+watch(theme, () => monaco.editor.setTheme(theme.value))
 </script>
 
 <template>
