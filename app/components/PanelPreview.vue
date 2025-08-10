@@ -9,13 +9,14 @@ syncRef(computed(() => play.previewLocation.fullPath), inputUrl, { direction: 'l
 function refreshIframe() {
   if (play.previewUrl && inner.value?.iframe?.value) {
     inner.value.iframe.value.src = play.previewUrl
+    play.updatePreviewUrl()
     inputUrl.value = play.previewLocation.fullPath
   }
 }
 
 function navigate() {
   play.previewLocation.fullPath = inputUrl.value
-
+  play.updatePreviewUrl()
   const activeElement = document.activeElement
   if (activeElement instanceof HTMLElement)
     activeElement.blur()

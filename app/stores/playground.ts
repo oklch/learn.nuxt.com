@@ -18,7 +18,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
     origin: '',
     fullPath: '',
   })
-  const previewUrl = computed(() => previewLocation.value.origin + previewLocation.value.fullPath)
+  const previewUrl = ref('')
   const status = shallowRef<PlaygroundStatus>('init')
   const error = shallowRef<{ message: string }>()
   const stream = shallowRef<ReadableStream>()
@@ -26,6 +26,10 @@ export const usePlaygroundStore = defineStore('playground', () => {
 
   let processInstall: WebContainerProcess | undefined
   let processDev: WebContainerProcess | undefined
+
+  function updatePreviewUrl() {
+    previewUrl.value = previewLocation.value.origin + previewLocation.value.fullPath
+  }
 
   // Mount the playground on client side
   if (import.meta.client) {
@@ -66,6 +70,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
             origin: url,
             fullPath: '/',
           }
+          updatePreviewUrl()
         }
       })
       wc.on('error', (err) => {
@@ -170,6 +175,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
     fileSelected,
     restartServer: startServer,
     downloadZip,
+    updatePreviewUrl,
   }
 })
 

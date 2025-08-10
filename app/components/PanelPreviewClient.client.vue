@@ -16,6 +16,7 @@ const parentFunctions: ParentFunctions = {
     syncColorMode()
   },
   onNavigate: (path: string) => {
+    // previewUrl is not computed, no need to refresh again
     play.previewLocation.fullPath = path
   },
 }
