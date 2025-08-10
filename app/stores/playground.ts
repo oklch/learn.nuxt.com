@@ -28,10 +28,10 @@ export const usePlaygroundStore = defineStore('playground', () => {
   let processInstall: WebContainerProcess | undefined
   let processDev: WebContainerProcess | undefined
 
-  // Mount the playground
+  // Mount the playground on client side
   if (import.meta.client) {
-    ;(async () => {
-      const colorMode = useColorMode()
+    async function mount() {
+      const { templates } = await import('../templates')
       const { files: _files, tree } = await templates.basic({
         nuxtrc: [
           // Have color mode on initial load
@@ -84,7 +84,8 @@ export const usePlaygroundStore = defineStore('playground', () => {
           killPreviousProcess()
         })
       }
-    })()
+    }
+    mount()
   }
 
   function killPreviousProcess() {
