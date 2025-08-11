@@ -2,7 +2,7 @@
 import type { LanguageServiceEnvironment } from '@volar/monaco/worker'
 import type { VueCompilerOptions } from '@vue/language-service'
 import type * as monaco from 'monaco-editor'
-import type { WorkerHost, WorkerMessage } from './env'
+import type { WorkerHost } from './env'
 import { createNpmFileSystem } from '@volar/jsdelivr'
 import { createTypeScriptWorkerLanguageService } from '@volar/monaco/worker'
 import {
@@ -25,13 +25,7 @@ export interface CreateData {
 }
 let locale: string | undefined
 
-self.onmessage = async (msg: MessageEvent<WorkerMessage>) => {
-  if (msg.data?.event === 'init') {
-    locale = msg.data.tsLocale
-    self.postMessage('inited')
-    return
-  }
-
+self.onmessage = async () => {
   worker.initialize(
     (
       ctx: monaco.worker.IWorkerContext<WorkerHost>,
