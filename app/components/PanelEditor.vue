@@ -71,7 +71,7 @@ const panelInitEditor = computed(() => isMounted.value || {
         :size="100 - ui.panelFileTree"
         :style="panelInitEditor"
       >
-        <PanelEditorMonaco
+        <LazyPanelEditorMonaco
           v-if="play.fileSelected"
           v-model="input"
           class="h-full w-full"

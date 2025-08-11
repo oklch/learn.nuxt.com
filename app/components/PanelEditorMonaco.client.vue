@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { shikiToMonaco } from '@shikijs/monaco'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import { Store } from '~/monaco/env'
 import { getShiki } from '~/monaco/shiki'
-import '../monaco/worker'
+import { initMonaco } from '../monaco/worker'
 
 const { filepath } = defineProps<{
   filepath: string
@@ -24,12 +25,21 @@ const language = computed(() => {
     case 'json':
       return 'json'
     case 'vue':
+      return 'vue'
     case 'html':
       return 'html'
     default:
       return 'plaintext'
   }
 })
+
+const play = usePlaygroundStore()
+const store = new Store()
+
+watchEffect(() => {
+  store.files = play.files.map(i => i.filepath)
+})
+initMonaco(store)
 
 const colorMode = useColorMode()
 const theme = computed(() => colorMode.value === 'dark'
@@ -61,25 +71,26 @@ const stop = watch(monacoEl, async (el) => {
   const shiki = await getShiki()
   shikiToMonaco(shiki, monaco)
   const editor = monaco.editor.create(el, {
-    model: getModel(filepath),
-    theme: theme.value,
-    fontSize: 14,
-    bracketPairColorization: {
+    'model': getModel(filepath),
+    'theme': theme.value,
+    'fontSize': 14,
+    'bracketPairColorization': {
       enabled: false,
     },
-    glyphMargin: false,
-    automaticLayout: true,
-    folding: false,
-    lineDecorationsWidth: 10,
-    lineNumbersMinChars: 3,
-    fontFamily: 'DM Mono, monospace',
-    minimap: {
+    'glyphMargin': false,
+    'automaticLayout': true,
+    'folding': false,
+    'lineDecorationsWidth': 10,
+    'lineNumbersMinChars': 3,
+    'fontFamily': 'DM Mono, monospace',
+    'minimap': {
       enabled: false,
     },
-    padding: {
+    'padding': {
       top: 8,
     },
-    overviewRulerLanes: 0,
+    'semanticHighlighting.enabled': true,
+    'overviewRulerLanes': 0,
   })
   editor.onDidChangeModelContent(() => {
     code.value = editor.getValue()

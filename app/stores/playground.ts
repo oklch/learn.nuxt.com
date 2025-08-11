@@ -55,6 +55,9 @@ export const usePlaygroundStore = defineStore('playground', () => {
         }
       }
 
+      // if (import.meta.dev)
+      //   return
+
       const wc = await import('@webcontainer/api')
         .then(({ WebContainer }) => WebContainer.boot())
       webcontainer.value = wc
