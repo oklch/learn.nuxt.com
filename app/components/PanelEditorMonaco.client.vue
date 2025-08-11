@@ -3,7 +3,7 @@ import { shikiToMonaco } from '@shikijs/monaco'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { Store } from '~/monaco/env'
 import { getShiki } from '~/monaco/shiki'
-import { initMonaco } from '../monaco/worker'
+import { initMonaco } from '../monaco/setup'
 
 const { filepath } = defineProps<{
   filepath: string

@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import type { VirtualFile } from '~/structures/VirtualFile'
 import { Pane, Splitpanes } from 'splitpanes'
 import { filesToVirtualFsTree } from '~/templates/utils'
 
-const { files: allFiles = [] } = defineProps<{
-  files?: VirtualFile[]
-}>()
-
-const files = computed(() => allFiles.filter(file => !isFileIgnored(file.filepath)))
-const directory = computed(() => filesToVirtualFsTree(files.value))
-
 const play = usePlaygroundStore()
+const files = computed(() => play.files.filter(file => !isFileIgnored(file.filepath)))
+const directory = computed(() => filesToVirtualFsTree(files.value))
 
 const input = ref<string>()
 

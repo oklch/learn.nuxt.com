@@ -38,7 +38,7 @@ watch(
 const fitAddon = new FitAddon()
 terminal.loadAddon(fitAddon)
 
-function read(stream: ReadableStream) {
+function read(stream: ReadableStream<string>) {
   const reader = stream.getReader()
 
   function readNext() {
@@ -52,13 +52,22 @@ function read(stream: ReadableStream) {
   readNext()
 }
 
-watch(() => play.stream, (s) => {
-  if (s) {
+watch(() => play.currentProcess, (p) => {
+  if (p) {
     try {
-      read(s)
+      read(p.output)
     }
     catch (e) {
-      console.error('Terminal stream error:', e)
+      console.error('Terminal read stream error:', e)
+    }
+    try {
+      const writer = p.input.getWriter()
+      terminal.onData((data) => {
+        writer.write(data)
+      })
+    }
+    catch (e) {
+      console.error('Terminal write stream error:', e)
     }
   }
 }, { flush: 'sync', immediate: true })

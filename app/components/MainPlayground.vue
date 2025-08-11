@@ -15,8 +15,6 @@ useSeoMeta({
   description: home.value?.description,
 })
 
-const play = usePlaygroundStore()
-
 const ui = useUiState()
 const startDragging = useThrottleFn(() => {
   ui.isPanelDragging = true
@@ -73,7 +71,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
     <Pane :size="100 - ui.panelDocs" :style="panelInitRight">
       <Splitpanes class="h-full of-hidden" horizontal @resize="startDragging" @resized="endDraggingHorizontal">
         <Pane :size="ui.panelEditor" min-size="10" :style="panelInitEditor">
-          <PanelEditor :files="play.files" />
+          <PanelEditor />
         </Pane>
         <PaneSplitter />
         <Pane :size="ui.panelPreview" min-size="10" :style="panelInitPreview">
@@ -84,7 +82,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
           v-bind="terminalPaneProps" :style="panelInitTerminal"
           :class="ui.showTerminal ? '' : 'pane-hidden'"
         >
-          <PanelTerminal :stream="play.stream" />
+          <PanelTerminal />
         </Pane>
       </Splitpanes>
     </Pane>
