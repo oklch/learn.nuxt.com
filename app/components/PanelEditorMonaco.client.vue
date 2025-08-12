@@ -91,10 +91,12 @@ const stop = watch(monacoEl, async (el) => {
     },
     'semanticHighlighting.enabled': true,
     'overviewRulerLanes': 0,
+    'fixedOverflowWidgets': true,
   })
   editor.onDidChangeModelContent(() => {
     code.value = editor.getValue()
   })
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {})
   watch(
     () => filepath,
     () => {
