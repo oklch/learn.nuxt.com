@@ -3,6 +3,11 @@ export interface FrameFunctions {
 }
 
 export interface ParentFunctions {
-  onReady: () => void
+  onReady: (info: ClientInfo) => void
   onNavigate: (path: string) => void
+}
+
+export interface ClientInfo {
+  versionNuxt: string
+  versionVue: string
 }

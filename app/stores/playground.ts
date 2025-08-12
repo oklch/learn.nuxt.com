@@ -1,5 +1,6 @@
 import type { WebContainer, WebContainerProcess } from '@webcontainer/api'
 import type { VirtualFile } from '~/structures/VirtualFile'
+import type { ClientInfo } from '~/types/rpc'
 
 export const PlaygroundStatusOrder = [
   'init',
@@ -18,12 +19,12 @@ export const usePlaygroundStore = defineStore('playground', () => {
     origin: '',
     fullPath: '',
   })
-  const previewUrl = ref('')
+  const previewUrl = shallowRef('')
   const status = shallowRef<PlaygroundStatus>('init')
   const error = shallowRef<{ message: string }>()
   const fileSelected = shallowRef<VirtualFile>()
-
   const currentProcess = shallowRef<WebContainerProcess>()
+  const clientInfo = shallowRef<ClientInfo>()
 
   function updatePreviewUrl() {
     previewUrl.value = previewLocation.value.origin + previewLocation.value.fullPath
@@ -205,6 +206,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
     error,
     currentProcess,
     fileSelected,
+    clientInfo,
     restartServer: startServer,
     downloadZip,
     updatePreviewUrl,

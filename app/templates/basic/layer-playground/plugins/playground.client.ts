@@ -19,7 +19,8 @@ export default defineNuxtPlugin(() => {
     rpc.onNavigate(to.fullPath)
   })
 
-  rpc.onReady()
+  const runtimeConfig = useRuntimeConfig()
+  rpc.onReady(toRaw(runtimeConfig.public.clientInfo))
 })
 
 function createRpc(frameFunctions: FrameFunctions) {

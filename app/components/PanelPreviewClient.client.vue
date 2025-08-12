@@ -11,11 +11,12 @@ const colorMode = useColorMode()
 const parentFunctions: ParentFunctions = {
   // We wait for the client to send the ready message
   // So we don't show the loading screen
-  onReady: () => {
+  onReady: (info) => {
     play.status = 'ready'
+    play.clientInfo = info
     syncColorMode()
   },
-  onNavigate: (path: string) => {
+  onNavigate: (path) => {
     // previewUrl is not computed, no need to refresh again
     play.previewLocation.fullPath = path
   },
