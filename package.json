@@ -49,6 +49,7 @@
     "eslint": "^9.32.0",
     "eslint-plugin-format": "^1.0.1",
     "execa": "^9.6.0",
+    "fast-glob": "^3.3.3",
     "theme-vitesse": "^1.0.0",
     "typescript": "^5.9.2",
     "unocss": "^66.3.3"
