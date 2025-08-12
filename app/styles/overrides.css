@@ -52,3 +52,16 @@
 .terminal.xterm .xterm-rows {
   --uno: font-mono;
 }
+
+.v-popper--theme-dropdown .v-popper__inner {
+  --uno: bg-base border-base border;
+  color: inherit;
+}
+
+.v-popper--theme-dropdown .v-popper__arrow-outer {
+  --uno: border-base;
+}
+
+.v-popper--theme-dropdown .v-popper__arrow-inner {
+  --uno: border-white dark-border-[#020420];
+}

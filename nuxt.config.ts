@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@pinia/nuxt',
+    'floating-vue/nuxt',
   ],
   devtools: { enabled: false },
   app: {

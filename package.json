@@ -26,6 +26,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "birpc": "^2.5.0",
+    "floating-vue": "^5.2.2",
     "jszip": "^3.10.1",
     "monaco-editor": "^0.52.2",
     "nuxt": "^4.0.1",
