@@ -1,4 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { execaSync } from 'execa'
+
 export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
@@ -28,6 +29,12 @@ export default defineNuxtConfig({
           },
         },
       },
+    },
+  },
+  runtimeConfig: {
+    public: {
+      buildTime: Date.now(),
+      gitSha: execaSync('git', ['rev-parse', 'HEAD']).stdout,
     },
   },
   compatibilityDate: '2025-07-15',

@@ -1,12 +1,23 @@
 <script setup lang="ts">
 const ui = useUiState()
 const play = usePlaygroundStore()
+
+const runtime = useRuntimeConfig()
+
+const repo = 'https://github.com/oklch/learn.nuxt.com'
+const buildTime = new Date(runtime.public.buildTime)
+const timeAgo = useTimeAgo(buildTime)
 </script>
 
 <template>
   <nav flex="~ gap-1 items-center" p="x4 y3" border="b base">
     <NuxtLink to="/" title="Nuxt Playground">
       <NuxtPlaygroundLogo class="h-2em" />
+    </NuxtLink>
+    <NuxtLink :to="`${repo}/commit/${runtime.public.gitSha}`" target="_blank" title="View on GitHub">
+      <time text-sm op50 :datetime="buildTime.toISOString()" :title="buildTime.toLocaleString()">
+        Built {{ timeAgo }}
+      </time>
     </NuxtLink>
     <div flex-auto />
     <button
