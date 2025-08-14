@@ -1,80 +1,145 @@
-import type { WorkerLanguageService } from '@volar/monaco/worker'
+import type { FileType } from './types'
 import type { CreateData } from './vue.worker'
 import * as volar from '@volar/monaco'
-import { editor, languages, Uri } from 'monaco-editor'
+import { editor, languages, Uri } from 'monaco-editor-core'
+import { basename, dirname } from 'pathe'
+import stripJsonComments from 'strip-json-comments'
 import { getOrCreateModel } from './utils'
 
-export class Store {
-  vueVersion = '3.5.18'
-  typescriptVersion = '5.9.2'
-  getTsConfig = () => ({})
-  files: string[] = []
-}
+export type PlaygroundMonacoContext = Pick<PlaygroundStore, 'webcontainer' | 'files'>
 
 export class WorkerHost {
-  onFetchCdnFile(uri: string, text: string) {
-    getOrCreateModel(Uri.parse(uri), undefined, text)
+  constructor(private ctx: PlaygroundMonacoContext) {}
+
+  async fsReadFile(uriString: string, encoding = 'utf-8') {
+    const uri = Uri.parse(uriString)
+    try {
+      const filepath = withoutLeadingSlash(uri.fsPath)
+      const content = await this.ctx.webcontainer!.fs.readFile(filepath, encoding as 'utf-8')
+      if (content != null)
+        getOrCreateModel(uri, undefined, content)
+      return content
+    }
+    catch (err) {
+      console.error(err)
+      return undefined
+    }
+  }
+
+  // Because WebContainer doesn't support fs.stat,
+  // we have to use readdir to check if the file is a directory
+  async fsStat(uriString: string) {
+    const uri = Uri.parse(uriString)
+    const dir = withoutLeadingSlash(dirname(uri.fsPath))
+    const base = basename(uri.fsPath)
+
+    try {
+      // TODO: should we cache it?
+      const files = await this.ctx.webcontainer!.fs.readdir(dir, { withFileTypes: true })
+      const file = files.find(item => item.name === base)
+      if (!file)
+        return undefined
+      if (file.isFile()) {
+        return {
+          type: 1 satisfies FileType.File,
+          size: 100,
+          ctime: Date.now(),
+          mtime: Date.now(),
+        }
+      }
+      else {
+        return {
+          type: 2 satisfies FileType.Directory,
+          size: -1,
+          ctime: -1,
+          mtime: -1,
+        }
+      }
+    }
+    catch {
+      return undefined
+    }
+  }
+
+  async fsReadDirectory(uriString: string) {
+    const uri = Uri.parse(uriString)
+    try {
+      const filepath = withoutLeadingSlash(uri.fsPath)
+      const result = await this.ctx.webcontainer!.fs.readdir(filepath, { withFileTypes: true })
+      return result.map(item => [item.name, item.isDirectory() ? 2 : 1]) as [string, 1 | 2][]
+    }
+    catch (err) {
+      console.error(err)
+      return []
+    }
   }
 }
 
 let disposeVue: undefined | (() => void)
-export async function reloadLanguageTools(store: Store) {
+export async function reloadLanguageTools(ctx: PlaygroundMonacoContext) {
   disposeVue?.()
 
-  let dependencies: Record<string, string> = {}
+  // eslint-disable-next-line no-console
+  console.info('Initializing Vue Language Service...')
 
-  if (store.vueVersion) {
-    dependencies = {
-      'vue': store.vueVersion,
-      '@vue/compiler-core': store.vueVersion,
-      '@vue/compiler-dom': store.vueVersion,
-      '@vue/compiler-sfc': store.vueVersion,
-      '@vue/compiler-ssr': store.vueVersion,
-      '@vue/reactivity': store.vueVersion,
-      '@vue/runtime-core': store.vueVersion,
-      '@vue/runtime-dom': store.vueVersion,
-      '@vue/shared': store.vueVersion,
-    }
+  // Try load tsconfig.json from .nuxt
+  const tsconfigRaw = await ctx.webcontainer?.fs
+    .readFile('.nuxt/tsconfig.json', 'utf-8')
+    .catch(() => undefined)
+  const tsconfig = tsconfigRaw
+    ? JSON.parse(stripJsonComments(tsconfigRaw, { trailingCommas: true }))
+    : {}
+
+  // Resolve .nuxt/tsconfig.json paths from `./.nuxt` to `./`
+  function resolvePath(path: string) {
+    if (path.startsWith('./'))
+      return `./.nuxt/${path.slice(2)}`
+    if (path.startsWith('..'))
+      return `.${path.slice(2)}`
+    return path
   }
+  tsconfig.compilerOptions ||= {}
+  tsconfig.compilerOptions.paths ||= {}
+  Object.values(tsconfig.compilerOptions.paths as Record<string, string[]>)
+    .forEach((paths) => {
+      paths.forEach((path, i) => {
+        paths[i] = resolvePath(path)
+      })
+    })
 
-  if (store.typescriptVersion) {
-    dependencies = {
-      ...dependencies,
-      typescript: store.typescriptVersion,
-    }
-  }
+  // Load files into Model so that the language service is aware of it
+  // In VS Code this is done by `include` in tsconfig.json, while here in Monaco
+  // `include` and `exclude` are not supported.
+  const extraFiles = await loadFiles(ctx, ['.nuxt/nuxt.d.ts'])
 
-  const worker = editor.createWebWorker<WorkerLanguageService>({
+  const worker = editor.createWebWorker<any>({
     moduleId: 'vs/language/vue/vueWorker',
     label: 'vue',
-    host: new WorkerHost(),
+    host: new WorkerHost(ctx),
     createData: {
-      tsconfig: store.getTsConfig?.() || {},
-      dependencies, // not required
+      tsconfig,
     } satisfies CreateData,
   })
-  const languageId = ['vue', 'javascript', 'typescript']
-  const getSyncUris = () => {
-    const files = store.files.map(filename =>
-      Uri.parse(`file:///${filename}`),
-    )
-    return files
-  }
 
-  const { dispose: disposeMarkers } = volar.activateMarkers(
+  const languageId = ['vue', 'javascript', 'typescript']
+  const getSyncUris = () => [
+    ...ctx.files.map(file => Uri.parse(`file:///${file.filepath}`)),
+    ...extraFiles,
+  ]
+  const { dispose: disposeMarkers } = volar.editor.activateMarkers(
     worker,
     languageId,
     'vue',
     getSyncUris,
     editor,
   )
-  const { dispose: disposeAutoInsertion } = volar.activateAutoInsertion(
+  const { dispose: disposeAutoInsertion } = volar.editor.activateAutoInsertion(
     worker,
     languageId,
     getSyncUris,
     editor,
   )
-  const { dispose: disposeProvides } = await volar.registerProviders(
+  const { dispose: disposeProvides } = await volar.languages.registerProvides(
     worker,
     languageId,
     getSyncUris,
@@ -82,8 +147,33 @@ export async function reloadLanguageTools(store: Store) {
   )
 
   disposeVue = () => {
+    worker?.dispose()
     disposeMarkers()
     disposeAutoInsertion()
     disposeProvides()
   }
+}
+
+function loadFiles(ctx: PlaygroundMonacoContext, files: string[]) {
+  return Promise.all(files.map(async (file) => {
+    const filepath = withoutLeadingSlash(file)
+    let content
+    try {
+      content = await ctx.webcontainer?.fs.readFile(filepath, 'utf-8')
+    }
+    catch {
+      content = undefined
+    }
+    const uri = Uri.parse(`file:///${filepath}`)
+    if (content != null) {
+      getOrCreateModel(uri, undefined, content)
+      return uri
+    }
+    return undefined!
+  }))
+    .then(uris => uris.filter(Boolean))
+}
+
+function withoutLeadingSlash(path: string) {
+  return path.replace(/^\/+/, '')
 }

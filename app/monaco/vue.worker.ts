@@ -1,92 +1,86 @@
-/* eslint-disable no-restricted-globals */
-import type { LanguageServiceEnvironment } from '@volar/monaco/worker'
 import type { VueCompilerOptions } from '@vue/language-service'
-import type * as monaco from 'monaco-editor'
+import type * as monaco from 'monaco-editor-core'
 import type { WorkerHost } from './env'
-import { createNpmFileSystem } from '@volar/jsdelivr'
-import { createTypeScriptWorkerLanguageService } from '@volar/monaco/worker'
 import {
-  createVueLanguagePlugin,
-  getFullLanguageServicePlugins,
-  resolveVueCompilerOptions,
-} from '@vue/language-service'
+  createLanguageHost,
+  createLanguageService,
+  createServiceEnvironment,
+} from '@volar/monaco/worker'
+import { resolveConfig } from '@vue/language-service'
 // @ts-expect-error missing types
-import * as worker from 'monaco-editor/esm/vs/editor/editor.worker'
+import * as worker from 'monaco-editor-core/esm/vs/editor/editor.worker'
 import * as ts from 'typescript/lib/tsserverlibrary'
-
-import { URI } from 'vscode-uri'
 
 export interface CreateData {
   tsconfig: {
     compilerOptions?: import('typescript').CompilerOptions
     vueCompilerOptions?: Partial<VueCompilerOptions>
   }
-  dependencies: Record<string, string>
 }
-let locale: string | undefined
 
-self.onmessage = async () => {
-  worker.initialize(
-    (
-      ctx: monaco.worker.IWorkerContext<WorkerHost>,
-      { tsconfig, dependencies }: CreateData,
-    ) => {
-      const asFileName = (uri: URI) => uri.path
-      const asUri = (fileName: string): URI => URI.file(fileName)
-      const env: LanguageServiceEnvironment = {
-        workspaceFolders: [URI.file('/')],
-        locale,
-        fs: createNpmFileSystem(
-          (uri) => {
-            if (uri.scheme === 'file') {
-              if (uri.path === '/node_modules') {
-                return ''
-              }
-              else if (uri.path.startsWith('/node_modules/')) {
-                return uri.path.slice('/node_modules/'.length)
-              }
-            }
-          },
-          pkgName => dependencies[pkgName],
-          (path, content) => {
-            ctx.host.onFetchCdnFile(
-              asUri(`/node_modules/${path}`).toString(),
-              content,
-            )
-          },
-        ),
-      }
+/**
+ * Pathes that we know won't exists, we can skip them to improve performance
+ */
+const invalidPathes = [
+  /\/@types\/(vue|typescript)/,
+  /\/@typescript\//,
+]
 
-      const { options: compilerOptions } = ts.convertCompilerOptionsFromJson(
-        tsconfig?.compilerOptions || {},
-        '',
-      )
-      const vueCompilerOptions = resolveVueCompilerOptions(
-        tsconfig.vueCompilerOptions || {},
-      )
+function isInvalidPath(filepath: string) {
+  return invalidPathes.some(re => re.test(filepath))
+}
 
-      return createTypeScriptWorkerLanguageService({
-        typescript: ts,
+// eslint-disable-next-line no-restricted-globals
+self.onmessage = () => {
+  worker.initialize((
+    ctx: monaco.worker.IWorkerContext<WorkerHost>,
+    { tsconfig }: CreateData,
+  ) => {
+    const { options: compilerOptions } = ts.convertCompilerOptionsFromJson(
+      tsconfig.compilerOptions || {},
+      '',
+    )
+
+    // eslint-disable-next-line no-console
+    console.log('Vue Language Services: compilerOptions', compilerOptions)
+
+    const env = createServiceEnvironment()
+    const host = createLanguageHost(
+      ctx.getMirrorModels,
+      env,
+      '/',
+      compilerOptions,
+    )
+
+    env.fs = {
+      async readFile(uri) {
+        if (isInvalidPath(uri))
+          return undefined
+        const file = await ctx.host.fsReadFile(uri)
+        return file
+      },
+      async stat(uri) {
+        if (isInvalidPath(uri))
+          return undefined
+        const result = await ctx.host.fsStat(uri)
+        return result
+      },
+      async readDirectory(uri) {
+        const dirs = await ctx.host.fsReadDirectory(uri)
+        return dirs
+      },
+    }
+
+    return createLanguageService(
+      { typescript: ts },
+      env,
+      resolveConfig(
+        ts,
+        {},
         compilerOptions,
-        workerContext: ctx,
-        env,
-        uriConverter: {
-          asFileName,
-          asUri,
-        },
-        languagePlugins: [
-          createVueLanguagePlugin(
-            ts,
-            compilerOptions,
-            vueCompilerOptions,
-            asFileName,
-          ),
-        ],
-        languageServicePlugins: getFullLanguageServicePlugins(ts),
-        setup({ project }) {
-          project.vue = { compilerOptions: vueCompilerOptions }
-        },
-      })
-    },
-  )
+        tsconfig?.vueCompilerOptions || {},
+      ),
+      host,
+    )
+  })
 }

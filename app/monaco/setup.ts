@@ -1,22 +1,22 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable new-cap */
-import type { Store } from './env'
-import * as monaco from 'monaco-editor'
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import * as monaco from 'monaco-editor-core'
+import editorWorker from 'monaco-editor-core/esm/vs/editor/editor.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+
 import { reloadLanguageTools } from './env'
 import vueWorker from './vue.worker?worker'
 
-export function initMonaco(store: Store) {
-  // eslint-disable-next-line no-restricted-globals
+export function initMonaco(ctx: PlaygroundStore) {
+  // @ts-expect-error MonacoEnvironment is a global variable injected for monaco
   self.MonacoEnvironment = {
     async getWorker(_: any, label: string) {
+      console.log(label)
       switch (label) {
         case 'typescript':
         case 'javascript':
-          return new tsWorker()
         case 'vue':
           return new vueWorker()
 
@@ -39,7 +39,11 @@ export function initMonaco(store: Store) {
     },
   }
 
-  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
   monaco.languages.register({ id: 'vue', extensions: ['.vue'] })
-  monaco.languages.onLanguage('vue', () => reloadLanguageTools(store))
+  monaco.languages.register({ id: 'javascript', extensions: ['.js'] })
+  monaco.languages.register({ id: 'typescript', extensions: ['.ts'] })
+  monaco.languages.register({ id: 'json', extensions: ['.json'] })
+  monaco.languages.register({ id: 'html', extensions: ['.html'] })
+
+  monaco.languages.onLanguage('vue', () => reloadLanguageTools(ctx))
 }

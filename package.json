@@ -17,9 +17,8 @@
     "@nuxtjs/color-mode": "3.5.2",
     "@pinia/nuxt": "^0.11.2",
     "@shikijs/monaco": "^3.9.2",
-    "@volar/jsdelivr": "^2.4.23",
-    "@volar/monaco": "^2.4.23",
-    "@vue/language-service": "~2.2.2",
+    "@volar/monaco": "^1.11.1",
+    "@vue/language-service": "^1.8.25",
     "@vueuse/core": "^13.6.0",
     "@vueuse/nuxt": "^13.6.0",
     "@webcontainer/api": "^1.6.1",
@@ -28,11 +27,14 @@
     "birpc": "^2.5.0",
     "floating-vue": "^5.2.2",
     "jszip": "^3.10.1",
-    "monaco-editor": "^0.52.2",
+    "monaco-editor": "^0.45.0",
+    "monaco-editor-core": "^0.45.0",
     "nuxt": "^4.0.1",
+    "pathe": "^2.0.3",
     "pinia": "^3.0.3",
     "shiki": "^3.9.2",
     "splitpanes": "3.1.5",
+    "strip-json-comments": "^5.0.3",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
   },
@@ -57,9 +59,6 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "better-sqlite3"
-    ],
-    "overrides": {
-      "@volar/language-service": "2.4.15"
-    }
+    ]
   }
 }

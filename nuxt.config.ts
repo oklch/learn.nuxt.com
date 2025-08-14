@@ -56,6 +56,17 @@ export default defineNuxtConfig({
         'Cross-Origin-Opener-Policy': 'same-origin',
       },
     },
+    optimizeDeps: {
+      include: [
+        'monaco-editor/esm/vs/editor/editor.worker',
+        'monaco-editor-core/esm/vs/editor/editor.worker',
+        'typescript/lib/tsserverlibrary',
+        '@vue/language-service',
+        '@volar/monaco/worker',
+        'typescript',
+        'vscode-uri ',
+      ],
+    },
   },
   eslint: {
     config: {

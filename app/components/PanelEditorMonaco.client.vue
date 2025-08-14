@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shikiToMonaco } from '@shikijs/monaco'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import { Store } from '~/monaco/env'
+import * as monaco from 'monaco-editor-core/esm/vs/editor/editor.api'
+import { reloadLanguageTools } from '~/monaco/env'
 import { getShiki } from '~/monaco/shiki'
 import { initMonaco } from '../monaco/setup'
 
@@ -34,12 +34,17 @@ const language = computed(() => {
 })
 
 const play = usePlaygroundStore()
-const store = new Store()
 
-watchEffect(() => {
-  store.files = play.files.map(i => i.filepath)
-})
-initMonaco(store)
+initMonaco(play)
+// Restart language tools when dependencies install finished
+watch(
+  () => play.status,
+  (s) => {
+    if (s === 'start') {
+      reloadLanguageTools(play)
+    }
+  },
+)
 
 const colorMode = useColorMode()
 const theme = computed(() => colorMode.value === 'dark'
@@ -71,27 +76,26 @@ const stop = watch(monacoEl, async (el) => {
   const shiki = await getShiki()
   shikiToMonaco(shiki, monaco)
   const editor = monaco.editor.create(el, {
-    'model': getModel(filepath),
-    'theme': theme.value,
-    'fontSize': 14,
-    'bracketPairColorization': {
+    model: getModel(filepath),
+    theme: theme.value,
+    fontSize: 14,
+    bracketPairColorization: {
       enabled: false,
     },
-    'glyphMargin': false,
-    'automaticLayout': true,
-    'folding': false,
-    'lineDecorationsWidth': 10,
-    'lineNumbersMinChars': 3,
-    'fontFamily': 'DM Mono, monospace',
-    'minimap': {
+    glyphMargin: false,
+    automaticLayout: true,
+    folding: false,
+    lineDecorationsWidth: 10,
+    lineNumbersMinChars: 3,
+    fontFamily: 'DM Mono, monospace',
+    minimap: {
       enabled: false,
     },
-    'padding': {
+    padding: {
       top: 8,
     },
-    'semanticHighlighting.enabled': true,
-    'overviewRulerLanes': 0,
-    'fixedOverflowWidgets': true,
+    overviewRulerLanes: 0,
+    fixedOverflowWidgets: true,
   })
   editor.onDidChangeModelContent(() => {
     code.value = editor.getValue()
