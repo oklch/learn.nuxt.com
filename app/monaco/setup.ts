@@ -13,7 +13,8 @@ export function initMonaco(ctx: PlaygroundStore) {
   // @ts-expect-error MonacoEnvironment is a global variable injected for monaco
   self.MonacoEnvironment = {
     async getWorker(_: any, label: string) {
-      console.log(label)
+      // eslint-disable-next-line no-console
+      console.log('label', label)
       switch (label) {
         case 'typescript':
         case 'javascript':

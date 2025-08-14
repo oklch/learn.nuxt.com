@@ -18,9 +18,14 @@ watch(() => play.fileSelected, () => {
   input.value = play.fileSelected?.read() || ''
 })
 
+const debouncedWrite = useDebounceFn((value: string) => {
+  play.fileSelected?.write(value)
+}, 300)
+
 watch(input, (currentInput, previousInput) => {
-  if (currentInput != null && currentInput !== previousInput)
-    play.fileSelected?.write(currentInput)
+  if (currentInput != null && currentInput !== previousInput) {
+    debouncedWrite(currentInput)
+  }
 })
 
 const ui = useUiState()
