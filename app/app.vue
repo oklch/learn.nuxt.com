@@ -7,6 +7,6 @@ import './styles/prose.css'
 
 <template>
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage page-key="playground" />
   </NuxtLayout>
 </template>

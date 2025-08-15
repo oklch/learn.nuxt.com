@@ -1,20 +1,6 @@
 <script setup lang="ts">
 import { Pane, Splitpanes } from 'splitpanes'
 
-const route = useRoute()
-const { data: home } = await useAsyncData(
-  `home-content-${route.path}`,
-  () => queryCollection('content').path(route.path).first(),
-  {
-    watch: [() => route.path],
-  },
-)
-
-useSeoMeta({
-  title: home.value?.title,
-  description: home.value?.description,
-})
-
 const ui = useUiState()
 const startDragging = useThrottleFn(() => {
   ui.isPanelDragging = true
@@ -65,7 +51,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
 <template>
   <Splitpanes h-full of-hidden @resize="startDragging" @resized="endDraggingVertical">
     <Pane :size="ui.panelDocs" :min-size="10" :style="panelInitDocs">
-      <PanelDocs :home="home" />
+      <PanelDocs />
     </Pane>
     <PaneSplitter />
     <Pane :size="100 - ui.panelDocs" :style="panelInitRight">

@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import type { ContentCollectionItem } from '@nuxt/content'
+const route = useRoute()
+const { data: page } = await useAsyncData(route.path, () => {
+  return queryCollection('content').path(route.path).first()
+}, { watch: [() => route.path] })
 
-defineProps<{
-  home: ContentCollectionItem | null | undefined
-}>()
+useSeoMeta({
+  title: page.value?.title,
+  description: page.value?.description,
+})
 </script>
 
 <template>
@@ -13,7 +17,7 @@ defineProps<{
       <span text-sm>Guide</span>
     </div>
     <article class="p6 max-w-none of-auto prose">
-      <ContentRenderer v-if="home" :value="home" />
+      <ContentRenderer v-if="page" :value="page" />
     </article>
   </div>
 </template>
