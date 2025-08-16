@@ -1,6 +1,9 @@
 import type { WebContainer, WebContainerProcess } from '@webcontainer/api'
-import type { VirtualFile } from '~/structures/VirtualFile'
+import type { Raw } from 'vue'
+import type { GuideMeta } from '~/types/guides'
 import type { ClientInfo } from '~/types/rpc'
+import { dirname } from 'pathe'
+import { VirtualFile } from '~/structures/VirtualFile'
 
 export const PlaygroundStatusOrder = [
   'init',
@@ -14,7 +17,7 @@ export type PlaygroundStatus = typeof PlaygroundStatusOrder[number] | 'error'
 
 export const usePlaygroundStore = defineStore('playground', () => {
   const webcontainer = shallowRef<WebContainer>()
-  const files = shallowRef([] as VirtualFile[])
+  const files = shallowReactive<Raw<Map<string, VirtualFile>>>(new Map())
   const previewLocation = ref({
     origin: '',
     fullPath: '',
@@ -25,11 +28,13 @@ export const usePlaygroundStore = defineStore('playground', () => {
   const fileSelected = shallowRef<VirtualFile>()
   const currentProcess = shallowRef<WebContainerProcess>()
   const clientInfo = shallowRef<ClientInfo>()
+  const mountedGuide = shallowRef<GuideMeta>()
 
   function updatePreviewUrl() {
     previewUrl.value = previewLocation.value.origin + previewLocation.value.fullPath
   }
 
+  let mountPromise: Promise<void> | undefined
   // Mount the playground on client side
   if (import.meta.client) {
     async function mount() {
@@ -43,7 +48,6 @@ export const usePlaygroundStore = defineStore('playground', () => {
             : '',
         ],
       })
-      files.value = _files
 
       // Inject .nuxtrc so that we can have the color mode on initial load
       if (colorMode.value === 'dark') {
@@ -54,14 +58,12 @@ export const usePlaygroundStore = defineStore('playground', () => {
         }
       }
 
-      // if (import.meta.dev)
-      //   return
-
       const wc = await import('@webcontainer/api')
         .then(({ WebContainer }) => WebContainer.boot())
       webcontainer.value = wc
       _files.forEach((file) => {
         file.wc = wc
+        files.set(file.filepath, file)
       })
 
       wc.on('server-ready', (port, url) => {
@@ -92,7 +94,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
         })
       }
     }
-    mount()
+    mountPromise = mount()
   }
 
   let abortController: AbortController | undefined
@@ -197,6 +199,59 @@ export const usePlaygroundStore = defineStore('playground', () => {
     URL.revokeObjectURL(url)
   }
 
+  const guideDispose: (() => void | Promise<void>)[] = []
+  async function mountGuide(guide?: GuideMeta) {
+    await mountPromise
+
+    async function updateOrCreateFile(filepath: string, content: string) {
+      const file = files.get(filepath)
+      if (file) {
+        const oldContent = file.read()
+        await file.write(content)
+        guideDispose.push(async () => {
+          await file.write(oldContent)
+        })
+        return file
+      }
+      else {
+        const newFile = new VirtualFile(filepath, content)
+        newFile.wc = webcontainer.value
+        await newFile.write(content)
+        files.set(filepath, newFile)
+        guideDispose.push(async () => {
+          files.delete(filepath)
+          await webcontainer.value!.fs.rm(filepath)
+        })
+        return newFile
+      }
+    }
+
+    // Unmount the previous guide
+    await Promise.all(guideDispose.map(dispose => dispose()))
+    guideDispose.length = 0
+
+    if (guide) {
+      // eslint-disable-next-line no-console
+      console.log('mounting guide', guide)
+
+      await Promise.all(
+        Object.entries(guide?.files || {})
+          .map(async ([filepath, content]) => {
+            // eslint-disable-next-line no-console
+            console.log({ filepath, content })
+            await webcontainer.value!.fs.mkdir(dirname(filepath), { recursive: true })
+            await updateOrCreateFile(filepath, content)
+          }),
+      )
+    }
+
+    previewLocation.value.fullPath = guide?.startingUrl || '/'
+    updatePreviewUrl()
+    fileSelected.value = files.get(guide?.startingFile || 'app.vue')
+
+    mountedGuide.value = guide
+  }
+
   return {
     webcontainer,
     files,
@@ -207,9 +262,11 @@ export const usePlaygroundStore = defineStore('playground', () => {
     currentProcess,
     fileSelected,
     clientInfo,
+    mountedGuide,
     restartServer: startServer,
     downloadZip,
     updatePreviewUrl,
+    mountGuide,
   }
 })
 

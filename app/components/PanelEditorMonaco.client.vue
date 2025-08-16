@@ -11,6 +11,14 @@ const { filepath } = defineProps<{
 const code = defineModel<string>({ default: '' })
 const monacoEl = useTemplateRef('monacoEl')
 
+watch(
+  code,
+  (value) => {
+    const model = getModel(filepath)
+    model.setValue(value)
+  },
+)
+
 const models = new Map<string, monaco.editor.ITextModel>()
 
 const language = computed(() => {

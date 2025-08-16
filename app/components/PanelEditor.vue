@@ -3,18 +3,12 @@ import { Pane, Splitpanes } from 'splitpanes'
 import { filesToVirtualFsTree } from '~/templates/utils'
 
 const play = usePlaygroundStore()
-const files = computed(() => play.files.filter(file => !isFileIgnored(file.filepath)))
+const files = computed(() => Array.from(play.files.values()).filter(file => !isFileIgnored(file.filepath)))
 const directory = computed(() => filesToVirtualFsTree(files.value))
 
 const input = ref<string>()
 
-// Select the first file by default.
-watchEffect(() => {
-  if (play.fileSelected == null && files.value.length > 0)
-    play.fileSelected = files.value[0]
-})
-
-watch(() => play.fileSelected, () => {
+watch(() => [play.fileSelected, play.mountedGuide], () => {
   input.value = play.fileSelected?.read() || ''
 })
 

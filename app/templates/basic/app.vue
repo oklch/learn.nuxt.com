@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const msg = 'Hello World! This is the basic template.'
+</script>
+
 <template>
-  <NuxtPage />
+  <div>{{ msg }}</div>
 </template>
