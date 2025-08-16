@@ -2,11 +2,20 @@
 const router = useRouter()
 const play = usePlaygroundStore()
 
+const templatesMap = Object.fromEntries(
+  Object.entries(import.meta.glob('../../content/**/.template/index.ts'))
+    .map(([key, loader]) => [
+      key
+        .replace(/^\/content/, '')
+        .replace(/\/\.template\/index\.ts$/, '')
+        .replace(/\/\d+\./g, '/'),
+      loader,
+    ]),
+)
+
 async function mount(path: string) {
-  if (path === '/views/app-vue')
-    play.mountGuide(await import('../../content/views/1.app-vue/index').then(m => m.meta))
-  else if (path === '/views/routing')
-    play.mountGuide(await import('../../content/views/3.routing/index').then(m => m.meta))
+  if (templatesMap[path])
+    play.mountGuide(await templatesMap[path]().then((m: any) => m.meta))
   else
     play.mountGuide() // unmount previous guide
 }
