@@ -7,6 +7,8 @@ export function getOrCreateModel(
   value: string,
 ) {
   const model = editor.getModel(uri)
+  if (uri.path === '/package.json')
+    return
   if (model) {
     model.setValue(value)
     return model
