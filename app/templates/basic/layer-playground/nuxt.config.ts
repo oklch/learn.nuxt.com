@@ -2,6 +2,7 @@ import { version as versionNuxt } from 'nuxt/package.json'
 import { version as versionVue } from 'vue'
 
 export default defineNuxtConfig({
+  ssr: false,
   devtools: { enabled: false },
   css: [
     '~/layer-playground/styles/base.css',

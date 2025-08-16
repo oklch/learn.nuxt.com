@@ -66,8 +66,18 @@ function read(stream: ReadableStream<string>) {
   readNext()
 }
 
+let init = false
+
 watch(() => play.currentProcess, (p) => {
   if (p) {
+    if (!init) {
+      init = true
+    }
+    else {
+      terminal.writeln('')
+      terminal.writeln(`-------------`)
+      terminal.writeln('')
+    }
     try {
       read(p.output)
     }

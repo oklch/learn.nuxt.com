@@ -10,7 +10,9 @@ export const PlaygroundStatusOrder = [
   'mount',
   'install',
   'start',
+  'polling',
   'ready',
+  'interactive',
 ] as const
 
 export type PlaygroundStatus = typeof PlaygroundStatusOrder[number] | 'error'
@@ -75,6 +77,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
             fullPath: '/',
           }
           updatePreviewUrl()
+          status.value = 'polling'
         }
       })
       wc.on('error', (err) => {
@@ -106,7 +109,9 @@ export const usePlaygroundStore = defineStore('playground', () => {
     currentProcess.value = undefined
   }
 
-  async function startServer() {
+  let hasInstalled = false
+
+  async function startServer(reinstall = false) {
     if (!import.meta.client)
       return
     killPreviousProcess()
@@ -115,7 +120,12 @@ export const usePlaygroundStore = defineStore('playground', () => {
     abortController = new AbortController()
     const signal = abortController.signal
 
-    await launchDefaultProcess(wc, signal)
+    if (reinstall)
+      hasInstalled = false
+    if (!hasInstalled)
+      await launchInstallProcess(wc, signal)
+    if (hasInstalled)
+      await launchNuxtProcess(wc, signal)
     await launchInteractiveProcess(wc, signal)
   }
 
@@ -127,12 +137,11 @@ export const usePlaygroundStore = defineStore('playground', () => {
     })
   }
 
-  async function launchDefaultProcess(wc: WebContainer, signal: AbortSignal) {
-    status.value = 'install'
-
+  async function launchInstallProcess(wc: WebContainer, signal: AbortSignal) {
     if (signal.aborted)
       return
 
+    status.value = 'install'
     const installExitCode = await spawn(wc, 'pnpm', ['install'])
     if (signal.aborted)
       return
@@ -145,6 +154,12 @@ export const usePlaygroundStore = defineStore('playground', () => {
       console.error('Unable to run pnpm install')
       return
     }
+    hasInstalled = true
+  }
+
+  async function launchNuxtProcess(wc: WebContainer, signal: AbortSignal) {
+    if (signal.aborted)
+      return
     status.value = 'start'
     await spawn(wc, 'pnpm', ['run', 'dev', '--no-qr'])
   }
@@ -152,6 +167,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
   async function launchInteractiveProcess(wc: WebContainer, signal: AbortSignal) {
     if (signal.aborted)
       return
+    status.value = 'interactive'
     await spawn(wc, 'jsh')
   }
 

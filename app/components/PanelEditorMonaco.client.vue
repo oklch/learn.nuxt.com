@@ -48,7 +48,7 @@ initMonaco(play)
 watch(
   () => play.status,
   (s) => {
-    if (s === 'start') {
+    if (s === 'ready') {
       reloadLanguageTools(play)
     }
   },
