@@ -59,6 +59,9 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "better-sqlite3"
-    ]
+    ],
+    "patchedDependencies": {
+      "splitpanes": "patches/splitpanes.patch"
+    }
   }
 }

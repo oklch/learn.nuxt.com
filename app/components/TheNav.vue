@@ -18,7 +18,7 @@ const id = useId()
     </NuxtLink>
     <div flex-auto />
     <button
-      v-if="play.status === 'ready'"
+      v-if="play.status === 'ready' && play.features.download !== false"
       p2 rounded
       hover="bg-active"
       title="Download as ZIP"
@@ -46,6 +46,7 @@ const id = useId()
       </template>
     </VDropdown>
     <button
+      v-if="play.features.terminal !== false"
       p2 rounded
       title="Toggle terminal"
       hover="bg-active"

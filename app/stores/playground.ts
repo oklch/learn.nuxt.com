@@ -1,6 +1,6 @@
 import type { WebContainer, WebContainerProcess } from '@webcontainer/api'
 import type { Raw } from 'vue'
-import type { GuideMeta } from '~/types/guides'
+import type { GuideMeta, PlaygroundFeatures } from '~/types/guides'
 import type { ClientInfo } from '~/types/rpc'
 import { dirname } from 'pathe'
 import { VirtualFile } from '~/structures/VirtualFile'
@@ -18,6 +18,8 @@ export const PlaygroundStatusOrder = [
 export type PlaygroundStatus = typeof PlaygroundStatusOrder[number] | 'error'
 
 export const usePlaygroundStore = defineStore('playground', () => {
+  const ui = useUiState()
+
   const webcontainer = shallowRef<WebContainer>()
   const files = shallowReactive<Raw<Map<string, VirtualFile>>>(new Map())
   const previewLocation = ref({
@@ -31,6 +33,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
   const currentProcess = shallowRef<WebContainerProcess>()
   const clientInfo = shallowRef<ClientInfo>()
   const mountedGuide = shallowRef<GuideMeta>()
+  const features = ref<PlaygroundFeatures>({})
 
   function updatePreviewUrl() {
     previewUrl.value = previewLocation.value.origin + previewLocation.value.fullPath
@@ -99,6 +102,21 @@ export const usePlaygroundStore = defineStore('playground', () => {
     }
     mountPromise = mount()
   }
+
+  watch(features, () => {
+    if (features.value.fileTree === true) {
+      if (ui.panelFileTree <= 0)
+        ui.panelFileTree = 20
+    }
+    else if (features.value.fileTree === false) {
+      ui.panelFileTree = 0
+    }
+
+    if (features.value.terminal === true)
+      ui.showTerminal = true
+    else if (features.value.terminal === false)
+      ui.showTerminal = false
+  })
 
   let abortController: AbortController | undefined
 
@@ -259,6 +277,10 @@ export const usePlaygroundStore = defineStore('playground', () => {
             await updateOrCreateFile(filepath, content)
           }),
       )
+      features.value = guide.features || {}
+    }
+    else {
+      features.value = {}
     }
 
     previewLocation.value.fullPath = guide?.startingUrl || '/'
@@ -279,6 +301,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
     fileSelected,
     clientInfo,
     mountedGuide,
+    features,
     restartServer: startServer,
     downloadZip,
     updatePreviewUrl,

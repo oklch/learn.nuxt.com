@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: false
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  splitpanes:
+    hash: 198556d6f0aed879e78e9c5e0c8aadc3c3faf9ba29535a3954ed04fe72a9efd1
+    path: patches/splitpanes.patch
+
 importers:
 
   .:
@@ -70,7 +75,7 @@ importers:
         version: 3.9.2
       splitpanes:
         specifier: 3.1.5
-        version: 3.1.5
+        version: 3.1.5(patch_hash=198556d6f0aed879e78e9c5e0c8aadc3c3faf9ba29535a3954ed04fe72a9efd1)
       strip-json-comments:
         specifier: ^5.0.3
         version: 5.0.3
@@ -12120,7 +12125,7 @@ snapshots:
 
   speakingurl@14.0.1: {}
 
-  splitpanes@3.1.5: {}
+  splitpanes@3.1.5(patch_hash=198556d6f0aed879e78e9c5e0c8aadc3c3faf9ba29535a3954ed04fe72a9efd1): {}
 
   stable-hash-x@0.2.0: {}
 
