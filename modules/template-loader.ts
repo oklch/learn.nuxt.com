@@ -43,23 +43,41 @@ export default defineNuxtModule({
         if (!id.match(/\/\.template\/index\.ts/))
           return
 
-        const dir = resolve(id, '../files')
-        const files = await fg('**/*.*', {
-          dot: true,
-          cwd: dir,
-          onlyFiles: true,
-          absolute: true,
-        })
+        async function getFileMap(dir: string) {
+          const files = await fg('**/*.*', {
+            dot: true,
+            cwd: dir,
+            onlyFiles: true,
+            absolute: true,
+          })
+          if (!files.length)
+            return undefined
 
-        const filesMap: Record<string, string> = {}
+          const filesMap: Record<string, string> = {}
 
-        await Promise.all(
-          files.sort().map(async (filename) => {
-            const content = await fs.readFile(filename, 'utf-8')
-            filesMap[relative(dir, filename)] = content
-          }),
-        )
-        return `${code}\nmeta.files = ${JSON.stringify(filesMap)}\n`
+          await Promise.all(
+            files.sort().map(async (filename) => {
+              const content = await fs.readFile(filename, 'utf-8')
+              filesMap[relative(dir, filename)] = content
+            }),
+          )
+          return filesMap
+        }
+
+        const [
+          files,
+          solutions,
+        ] = await Promise.all([
+          getFileMap(resolve(id, '../files')),
+          getFileMap(resolve(id, '../solutions')),
+        ])
+
+        return [
+          code,
+          `meta.files = ${JSON.stringify(files)}`,
+          `meta.solutions = ${JSON.stringify(solutions)}`,
+          '',
+        ].join('\n')
       },
     })
   },

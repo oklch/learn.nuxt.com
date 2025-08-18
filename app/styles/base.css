@@ -23,3 +23,7 @@ body {
 .dark::view-transition-new(root) {
   z-index: 1;
 }
+
+button {
+  cursor: pointer;
+}

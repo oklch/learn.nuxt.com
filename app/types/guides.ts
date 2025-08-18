@@ -4,11 +4,7 @@ export interface GuideMeta {
   startingUrl?: string
   // TODO:
   packageJsonOverrides?: any
-  /**
-   * When not provided, this will be loaded from './files' directory
-   */
   files?: Record<string, string>
-  // TODO:
   solutions?: Record<string, string>
 }
 

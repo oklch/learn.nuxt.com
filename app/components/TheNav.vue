@@ -18,6 +18,12 @@ const id = useId()
     </NuxtLink>
     <div flex-auto />
     <button
+      v-if="play.mountedGuide?.solutions"
+      @click="play.mountGuide(play.mountedGuide, !play.showingSolution)"
+    >
+      Toggle Solution
+    </button>
+    <button
       v-if="play.status === 'ready' && play.features.download !== false"
       p2 rounded
       hover="bg-active"
