@@ -68,6 +68,13 @@ export default defineNuxtConfig({
       ],
     },
   },
+  typescript: {
+    tsConfig: {
+      include: [
+        '../content/**/.template/**/*.ts',
+      ],
+    },
+  },
   eslint: {
     config: {
       standalone: false,

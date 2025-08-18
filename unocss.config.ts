@@ -24,7 +24,7 @@ export default defineConfig({
   theme: {
     colors: {
       primary: {
-        DEFAULT: '#00DC82',
+        DEFAULT: '#00c16a',
       },
     },
   },
@@ -37,7 +37,10 @@ export default defineConfig({
     presetTypography(),
     presetWebFonts({
       fonts: {
-        sans: 'DM Sans',
+        sans: {
+          name: 'DM Sans',
+          weights: [200, 400, 600, 700],
+        },
         serif: 'DM Serif Display',
         mono: 'DM Mono',
       },
@@ -53,7 +56,7 @@ export default defineConfig({
   ],
   content: {
     filesystem: [
-      './content/**/*.md',
+      '../content/**/*.md',
     ],
   },
 })

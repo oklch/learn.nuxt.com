@@ -11,14 +11,6 @@ const { filepath } = defineProps<{
 const code = defineModel<string>({ default: '' })
 const monacoEl = useTemplateRef('monacoEl')
 
-watch(
-  code,
-  (value) => {
-    const model = getModel(filepath)
-    model.setValue(value)
-  },
-)
-
 const models = new Map<string, monaco.editor.ITextModel>()
 
 const language = computed(() => {
@@ -109,10 +101,24 @@ const stop = watch(monacoEl, async (el) => {
     code.value = editor.getValue()
   })
   editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {})
+
   watch(
     () => filepath,
     () => {
       editor.setModel(getModel(filepath))
+    },
+  )
+
+  watch(
+    code,
+    (value) => {
+      if (value === editor.getValue())
+        return
+      const selections = editor.getSelections()
+      const model = getModel(filepath)
+      model.setValue(value)
+      if (selections)
+        editor.setSelections(selections)
     },
   )
 })

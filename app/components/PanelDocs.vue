@@ -41,6 +41,7 @@ const guide = useGuideStore()
     </article>
     <div border="t base dashed" px6 py2>
       <NuxtLink
+        v-if="sourceUrl"
         :to="sourceUrl" target="_blank"
         flex="~ items-center gap-2" op50 hover="text-primary op100"
       >
