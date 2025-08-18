@@ -2,7 +2,7 @@
   "name": "nuxt-app",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -29,7 +29,7 @@
     "jszip": "^3.10.1",
     "monaco-editor": "^0.45.0",
     "monaco-editor-core": "^0.45.0",
-    "nuxt": "^4.0.1",
+    "nuxt": "^4.0.3",
     "pathe": "^2.0.3",
     "pinia": "^3.0.3",
     "shiki": "^3.9.2",
@@ -39,22 +39,22 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.1.0",
-    "@iconify-json/carbon": "^1.2.11",
-    "@iconify-json/catppuccin": "^1.2.13",
+    "@antfu/eslint-config": "^5.2.1",
+    "@iconify-json/carbon": "^1.2.13",
+    "@iconify-json/catppuccin": "^1.2.15",
     "@iconify-json/ph": "^1.2.2",
-    "@iconify-json/svg-spinners": "^1.2.2",
-    "@nuxt/eslint": "^1.7.1",
-    "@unocss/eslint-plugin": "^66.3.3",
-    "@unocss/extractor-mdc": "^66.4.1",
-    "@unocss/nuxt": "^66.3.3",
-    "eslint": "^9.32.0",
+    "@iconify-json/svg-spinners": "^1.2.4",
+    "@nuxt/eslint": "^1.9.0",
+    "@unocss/eslint-plugin": "^66.4.2",
+    "@unocss/extractor-mdc": "^66.4.2",
+    "@unocss/nuxt": "^66.4.2",
+    "eslint": "^9.33.0",
     "eslint-plugin-format": "^1.0.1",
     "execa": "^9.6.0",
     "fast-glob": "^3.3.3",
     "theme-vitesse": "^1.0.0",
     "typescript": "^5.9.2",
-    "unocss": "^66.3.3"
+    "unocss": "^66.4.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
