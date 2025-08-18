@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const ui = useUiState()
+const ui = useUiStore()
 const play = usePlaygroundStore()
 </script>
 

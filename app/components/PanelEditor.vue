@@ -2,13 +2,14 @@
 import { Pane, Splitpanes } from 'splitpanes'
 import { filesToVirtualFsTree } from '~/templates/utils'
 
+const guide = useGuideStore()
 const play = usePlaygroundStore()
 const files = computed(() => Array.from(play.files.values()).filter(file => !isFileIgnored(file.filepath)))
 const directory = computed(() => filesToVirtualFsTree(files.value))
 
 const input = ref<string>()
 
-watch(() => [play.fileSelected, play.mountedGuide, play.showingSolution], () => {
+watch(() => [play.fileSelected, guide.currentGuide, guide.showingSolution], () => {
   input.value = play.fileSelected?.read() || ''
 })
 
@@ -22,7 +23,7 @@ watch(input, (currentInput, previousInput) => {
   }
 })
 
-const ui = useUiState()
+const ui = useUiStore()
 const startDragging = useThrottleFn(() => {
   ui.isPanelDragging = true
 }, 1000)

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-const ui = useUiState()
+const ui = useUiStore()
 const play = usePlaygroundStore()
+const guide = useGuideStore()
 
 const runtime = useRuntimeConfig()
 
@@ -18,17 +19,17 @@ const id = useId()
     </NuxtLink>
     <div flex-auto />
     <button
-      v-if="play.mountedGuide?.solutions"
-      @click="play.mountGuide(play.mountedGuide, !play.showingSolution)"
+      v-if="guide.currentGuide?.solutions"
+      @click="guide.toggleSolutions()"
     >
       Toggle Solution
     </button>
     <button
-      v-if="play.status === 'ready' && play.features.download !== false"
+      v-if="play.status === 'ready' && guide.features.download !== false"
       p2 rounded
       hover="bg-active"
       title="Download as ZIP"
-      @click="play.downloadZip()"
+      @click="downloadZip(play.webcontainer!)"
     >
       <div i-ph-download-duotone text-2xl />
     </button>
@@ -52,7 +53,6 @@ const id = useId()
       </template>
     </VDropdown>
     <button
-      v-if="play.features.terminal !== false"
       p2 rounded
       title="Toggle terminal"
       hover="bg-active"

@@ -1,9 +1,7 @@
 import type { WebContainer, WebContainerProcess } from '@webcontainer/api'
 import type { Raw } from 'vue'
-import type { GuideMeta, PlaygroundFeatures } from '~/types/guides'
-import type { ClientInfo } from '~/types/rpc'
-import { dirname } from 'pathe'
-import { VirtualFile } from '~/structures/VirtualFile'
+import { VirtualFile } from '~/structures'
+import { filesToWebContainerFs } from '~/templates/utils'
 
 export const PlaygroundStatusOrder = [
   'init',
@@ -18,69 +16,58 @@ export const PlaygroundStatusOrder = [
 export type PlaygroundStatus = typeof PlaygroundStatusOrder[number] | 'error'
 
 export const usePlaygroundStore = defineStore('playground', () => {
-  const ui = useUiState()
+  const preview = usePreviewStore()
 
   const webcontainer = shallowRef<WebContainer>()
   const files = shallowReactive<Raw<Map<string, VirtualFile>>>(new Map())
-  const previewLocation = ref({
-    origin: '',
-    fullPath: '',
-  })
-  const previewUrl = shallowRef('')
   const status = shallowRef<PlaygroundStatus>('init')
   const error = shallowRef<{ message: string }>()
   const fileSelected = shallowRef<VirtualFile>()
   const currentProcess = shallowRef<WebContainerProcess>()
-  const clientInfo = shallowRef<ClientInfo>()
-  const mountedGuide = shallowRef<GuideMeta>()
-  const features = ref<PlaygroundFeatures>({})
-  const showingSolution = shallowRef(false)
 
-  function updatePreviewUrl() {
-    previewUrl.value = previewLocation.value.origin + previewLocation.value.fullPath
-  }
+  let filesTemplate: Record<string, string>
+  let _promiseInit: Promise<void> | undefined
 
-  let mountPromise: Promise<void> | undefined
   // Mount the playground on client side
   if (import.meta.client) {
-    async function mount() {
+    async function init() {
       const colorMode = useColorMode()
-      const { templates } = await import('../templates')
-      const { files: _files, tree } = await templates.basic({
-        nuxtrc: [
-          // Have color mode on initial load
-          colorMode.value === 'dark'
-            ? 'app.head.htmlAttrs.class=dark'
-            : '',
-        ],
-      })
 
-      // Inject .nuxtrc so that we can have the color mode on initial load
-      if (colorMode.value === 'dark') {
-        tree['.nuxtrc'] = {
-          file: {
-            contents: `app.head.htmlAttrs.class=dark`,
-          },
-        }
-      }
+      const [
+        wc,
+        filesRaw,
+      ] = await Promise.all([
+        import('@webcontainer/api')
+          .then(({ WebContainer }) => WebContainer.boot()),
 
-      const wc = await import('@webcontainer/api')
-        .then(({ WebContainer }) => WebContainer.boot())
+        import('../templates')
+          .then(r => r.templates.basic({
+            nuxtrc: [
+              // Have color mode on initial load
+              colorMode.value === 'dark'
+                ? 'app.head.htmlAttrs.class=dark'
+                : '',
+            ],
+          })),
+      ])
+
+      filesTemplate = filesRaw
+
       webcontainer.value = wc
-      _files.forEach((file) => {
-        file.wc = wc
-        files.set(file.filepath, file)
-      })
+      Object.entries(filesRaw)
+        .forEach(([path, content]) => {
+          files.set(path, new VirtualFile(path, content, wc))
+        })
 
       wc.on('server-ready', (port, url) => {
         // Nuxt listen to multiple ports, and 'server-ready' is emitted for each of them
         // We need the main one
         if (port === 3000) {
-          previewLocation.value = {
+          preview.location = {
             origin: url,
             fullPath: '/',
           }
-          updatePreviewUrl()
+          preview.updateUrl()
           status.value = 'polling'
         }
       })
@@ -90,7 +77,7 @@ export const usePlaygroundStore = defineStore('playground', () => {
       })
 
       status.value = 'mount'
-      await wc.mount(tree)
+      await wc.mount(filesToWebContainerFs([...files.values()]))
 
       startServer()
 
@@ -101,23 +88,9 @@ export const usePlaygroundStore = defineStore('playground', () => {
         })
       }
     }
-    mountPromise = mount()
+
+    _promiseInit = init()
   }
-
-  watch(features, () => {
-    if (features.value.fileTree === true) {
-      if (ui.panelFileTree <= 0)
-        ui.panelFileTree = 20
-    }
-    else if (features.value.fileTree === false) {
-      ui.panelFileTree = 0
-    }
-
-    if (features.value.terminal === true)
-      ui.showTerminal = true
-    else if (features.value.terminal === false)
-      ui.showTerminal = false
-  })
 
   let abortController: AbortController | undefined
 
@@ -190,133 +163,58 @@ export const usePlaygroundStore = defineStore('playground', () => {
     await spawn(wc, 'jsh')
   }
 
-  async function downloadZip() {
-    if (!import.meta.client)
-      return
-    const wc = webcontainer.value!
-
-    const { default: JSZip } = await import('jszip')
-    const zip = new JSZip()
-    type Zip = typeof zip
-
-    async function crawlFiles(dir: string, zip: Zip) {
-      const files = await wc.fs.readdir(dir, { withFileTypes: true })
-
-      await Promise.all(
-        files.map(async (file) => {
-          if (isFileIgnored(file.name))
-            return
-
-          if (file.isFile()) {
-            // TODO: If it's package.json, we modify to remove some fields
-            const content = await wc.fs.readFile(`${dir}/${file.name}`, 'utf8')
-            zip.file(file.name, content)
-          }
-          else if (file.isDirectory()) {
-            const folder = zip.folder(file.name)!
-            return crawlFiles(`${dir}/${file.name}`, folder)
-          }
-        }),
-      )
-    }
-    await crawlFiles('.', zip)
-
-    const blob = await zip.generateAsync({ type: 'blob' })
-    const url = URL.createObjectURL(blob)
-    const date = new Date()
-    const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`
-    const link = document.createElement('a')
-    link.href = url
-    // TODO: have a better name with the current tutorial name
-    link.download = `nuxt-playground-${dateString}.zip`
-    link.click()
-    link.remove()
-    URL.revokeObjectURL(url)
-  }
-
-  const guideDispose: (() => void | Promise<void>)[] = []
-
-  async function _mountFiles(overrides: Record<string, string>) {
-    await Promise.all(
-      Object.entries(overrides)
-        .map(async ([filepath, content]) => {
-          // eslint-disable-next-line no-console
-          console.log({ filepath, content })
-          await webcontainer.value!.fs.mkdir(dirname(filepath), { recursive: true })
-          await updateOrCreateFile(filepath, content)
-        }),
-    )
-
-    async function updateOrCreateFile(filepath: string, content: string) {
-      const file = files.get(filepath)
-      if (file) {
-        const oldContent = file.read()
+  async function _updateOrCreateFile(filepath: string, content: string) {
+    const file = files.get(filepath)
+    if (file) {
+      if (file.read() !== content)
         await file.write(content)
-        guideDispose.push(async () => {
-          await file.write(oldContent)
-        })
-        return file
-      }
-      else {
-        const newFile = new VirtualFile(filepath, content)
-        newFile.wc = webcontainer.value
-        await newFile.write(content)
-        files.set(filepath, newFile)
-        guideDispose.push(async () => {
-          files.delete(filepath)
-          await webcontainer.value!.fs.rm(filepath)
-        })
-        return newFile
-      }
-    }
-  }
-
-  async function mountGuide(guide?: GuideMeta, withSolution = false) {
-    await mountPromise
-
-    // Unmount the previous guide
-    await Promise.all(guideDispose.map(dispose => dispose()))
-    guideDispose.length = 0
-
-    if (guide) {
-      // eslint-disable-next-line no-console
-      console.log('mounting guide', guide)
-      const overrides = {
-        ...guide.files,
-        ...withSolution ? guide.solutions : {},
-      }
-      await _mountFiles(overrides)
-      features.value = guide.features || {}
+      return file
     }
     else {
-      features.value = {}
+      const newFile = new VirtualFile(filepath, content, webcontainer.value!)
+      files.set(filepath, newFile)
+      await newFile.write(content)
+      return newFile
+    }
+  }
+
+  /**
+   * Mount files to WebContainer.
+   * This will do a diff with the current files and only update the ones that changed
+   */
+  async function mount(map: Record<string, string>, templates = filesTemplate) {
+    const objects = {
+      ...templates,
+      ...map,
     }
 
-    previewLocation.value.fullPath = guide?.startingUrl || '/'
-    updatePreviewUrl()
-    fileSelected.value = files.get(guide?.startingFile || 'app.vue')
-
-    mountedGuide.value = guide
-    showingSolution.value = withSolution
+    await Promise.all([
+      ...Object.entries(objects)
+        .map(async ([filepath, content]) => {
+          await _updateOrCreateFile(filepath, content)
+        }),
+      ...Array.from(files.keys())
+        .filter(filepath => !(filepath in objects))
+        .map(async (filepath) => {
+          const file = files.get(filepath)
+          await file?.remove()
+          files.delete(filepath)
+        }),
+    ])
   }
 
   return {
+    get init() {
+      return _promiseInit
+    },
     webcontainer,
     files,
-    previewLocation,
-    previewUrl,
     status,
     error,
     currentProcess,
     fileSelected,
-    clientInfo,
-    mountedGuide,
-    features,
-    showingSolution,
     restartServer: startServer,
-    downloadZip,
-    updatePreviewUrl,
-    mountGuide,
+    mount,
   }
 })
 

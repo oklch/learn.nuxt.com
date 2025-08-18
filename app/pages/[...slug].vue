@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const router = useRouter()
-const play = usePlaygroundStore()
+const guide = useGuideStore()
 
 const templatesMap = Object.fromEntries(
   Object.entries(import.meta.glob(['../../content/**/.template/index.ts', '../../content/.template/index.ts']))
@@ -8,7 +8,7 @@ const templatesMap = Object.fromEntries(
       key
         .replace('../../content', '')
         .replace(/\/\.template\/index\.ts$/, '')
-        .replace(/\/\d+\./g, '/') || '',
+        .replace(/\/\d+\./g, '/'),
       loader,
     ]),
 )
@@ -19,10 +19,10 @@ if (import.meta.dev)
 
 async function mount(path: string) {
   path = path.replace(/\/$/, '') // remove trailing slash
-  if (templatesMap[path])
-    play.mountGuide(await templatesMap[path]!().then((m: any) => m.meta))
-  else
-    play.mountGuide() // unmount previous guide
+  await guide.mount(
+    await templatesMap[path]?.().then((m: any) => m.meta),
+    false,
+  )
 }
 
 router.afterEach(async (to) => {

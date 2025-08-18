@@ -4,8 +4,9 @@ import { createBirpc } from 'birpc'
 
 const iframeEl = useTemplateRef<HTMLIFrameElement>('iframeEl')
 
-const ui = useUiState()
+const ui = useUiStore()
 const play = usePlaygroundStore()
+const preview = usePreviewStore()
 const colorMode = useColorMode()
 
 const parentFunctions: ParentFunctions = {
@@ -13,12 +14,12 @@ const parentFunctions: ParentFunctions = {
   // So we don't show the loading screen
   onReady: (info) => {
     play.status = 'ready'
-    play.clientInfo = info
+    preview.clientInfo = info
     syncColorMode()
   },
   onNavigate: (path) => {
     // previewUrl is not computed, no need to refresh again
-    play.previewLocation.fullPath = path
+    preview.location.fullPath = path
   },
 }
 
@@ -51,9 +52,9 @@ watch(
 
 <template>
   <iframe
-    v-if="play.previewUrl"
+    v-if="preview.url"
     ref="iframeEl"
-    :src="play.previewUrl"
+    :src="preview.url"
     class="bg-transparent h-full w-full inset-0 absolute"
     :style="play.status === 'ready' ? '' : 'visibility: hidden;'"
     :class="{ 'pointer-events-none': ui.isPanelDragging }"

@@ -1,4 +1,4 @@
-export const useUiState = defineStore('ui', () => {
+export const useUiStore = defineStore('ui', () => {
   const isPanelDragging = ref(false)
 
   const persistState = reactive(getLayoutDefaults())
@@ -50,4 +50,4 @@ export const useUiState = defineStore('ui', () => {
 })
 
 if (import.meta.hot)
-  import.meta.hot.accept(acceptHMRUpdate(useUiState, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useUiStore, import.meta.hot))

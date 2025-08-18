@@ -29,7 +29,7 @@ const terminal = new Terminal({
 })
 
 // persist the scroll position of terminal
-const ui = useUiState()
+const ui = useUiStore()
 watch(() => ui.showTerminal, (v) => {
   if (!root.value)
     return

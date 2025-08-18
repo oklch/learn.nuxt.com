@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Pane, Splitpanes } from 'splitpanes'
 
-const ui = useUiState()
+const ui = useUiStore()
 const startDragging = useThrottleFn(() => {
   ui.isPanelDragging = true
 }, 1000)

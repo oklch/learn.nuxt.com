@@ -2,21 +2,22 @@
 const inner = useTemplateRef<{ iframe?: Ref<HTMLIFrameElement | undefined> }>('inner')
 
 const play = usePlaygroundStore()
+const preview = usePreviewStore()
 // auto update inputUrl when location value changed
 const inputUrl = ref<string>('')
-syncRef(computed(() => play.previewLocation.fullPath), inputUrl, { direction: 'ltr' })
+syncRef(computed(() => preview.location.fullPath), inputUrl, { direction: 'ltr' })
 
 function refreshIframe() {
-  if (play.previewUrl && inner.value?.iframe?.value) {
-    inner.value.iframe.value.src = play.previewUrl
-    play.updatePreviewUrl()
-    inputUrl.value = play.previewLocation.fullPath
+  if (preview.url && inner.value?.iframe?.value) {
+    inner.value.iframe.value.src = preview.url
+    preview.updateUrl()
+    inputUrl.value = preview.location.fullPath
   }
 }
 
 function navigate() {
-  play.previewLocation.fullPath = inputUrl.value
-  play.updatePreviewUrl()
+  preview.location.fullPath = inputUrl.value
+  preview.updateUrl()
   const activeElement = document.activeElement
   if (activeElement instanceof HTMLElement)
     activeElement.blur()
@@ -37,13 +38,13 @@ function navigate() {
       <div px-2 py1>
         <div
           flex="~ items-center justify-center" text-sm mx-auto px2 rounded bg-faded border="base 1 hover:gray-500/30"
-          :class="{ 'pointer-events-none': !play.previewUrl }"
+          :class="{ 'pointer-events-none': !preview.url }"
         >
           <form @submit.prevent="navigate">
             <input v-model="inputUrl" type="text" bg-transparent flex-1 focus:outline-none>
           </form>
           <div flex="~ items-center justify-end">
-            <button v-if="play.previewUrl" mx1 op-75 hover:op-100 @click="refreshIframe">
+            <button v-if="preview.url" mx1 op-75 hover:op-100 @click="refreshIframe">
               <div i-ph-arrow-clockwise-duotone text-sm />
             </button>
           </div>
@@ -64,14 +65,14 @@ function navigate() {
             <div flex="~ gap-2 items-center">
               Vue version:
               <code>
-                v{{ play.clientInfo!.versionVue }}
+                v{{ preview.clientInfo!.versionVue }}
               </code>
             </div>
             <div i-catppuccin-nuxt text-xl />
             <div flex="~ gap-2 items-center">
               Nuxt version:
               <code>
-                v{{ play.clientInfo!.versionNuxt }}
+                v{{ preview.clientInfo!.versionNuxt }}
               </code>
             </div>
           </div>

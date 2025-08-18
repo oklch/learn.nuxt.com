@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { VirtualFile } from '~/structures/VirtualFile'
-import type { VirtualFileSystemTree } from '~/structures/VirtualFileSystemTree'
+import type { VirtualFile, VirtualFileSystemTree } from '~/structures'
 
 const props = defineProps<{
   name?: string
