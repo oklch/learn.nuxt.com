@@ -14,6 +14,8 @@ const sourceUrl = computed(() =>
     ? `https://github.com/oklch/learn.nuxt.com/edit/main/content/${page.value.stem}.${page.value.extension}`
     : undefined,
 )
+
+const guide = useGuideStore()
 </script>
 
 <template>
@@ -21,6 +23,18 @@ const sourceUrl = computed(() =>
     <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
       <div i-ph-book-duotone />
       <span text-sm>Guide</span>
+      <div flex-auto />
+      <button
+        v-if="guide.currentGuide?.solutions"
+        text-sm my--1 mr--2 px2 py1 rounded op50
+        hover="bg-active op100"
+        flex="~ gap-2 items-center"
+        @click="guide.toggleSolutions()"
+      >
+        <div v-if="!guide.showingSolution " i-ph-lightbulb-filament-duotone />
+        <div v-else i-ph-arrow-counter-clockwise-duotone />
+        {{ guide.showingSolution ? 'Reset challenge' : 'Show solution' }}
+      </button>
     </div>
     <article class="p6 max-w-none of-auto prose">
       <ContentRenderer v-if="page" :value="page" />

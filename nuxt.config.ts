@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   app: {
     head: {
-      titleTemplate: '%s - Nuxt Playground',
+      titleTemplate: '%s - Nuxt Tutorial',
     },
   },
   colorMode: {

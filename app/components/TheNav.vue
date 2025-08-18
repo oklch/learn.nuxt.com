@@ -14,16 +14,10 @@ const id = useId()
 
 <template>
   <nav flex="~ gap-1 items-center" p="x4 y3" border="b base">
-    <NuxtLink to="/" title="Nuxt Playground">
+    <NuxtLink to="/" title="Nuxt Tutorial">
       <NuxtPlaygroundLogo class="h-2em" />
     </NuxtLink>
     <div flex-auto />
-    <button
-      v-if="guide.currentGuide?.solutions"
-      @click="guide.toggleSolutions()"
-    >
-      Toggle Solution
-    </button>
     <button
       v-if="play.status === 'ready' && guide.features.download !== false"
       p2 rounded
