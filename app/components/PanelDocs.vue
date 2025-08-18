@@ -8,10 +8,16 @@ useSeoMeta({
   title: page.value?.title,
   description: page.value?.description,
 })
+
+const sourceUrl = computed(() =>
+  page.value?.id
+    ? `https://github.com/oklch/learn.nuxt.com/edit/main/content/${page.value.stem}.${page.value.extension}`
+    : undefined,
+)
 </script>
 
 <template>
-  <div h-full grid="~ rows-[min-content_1fr]">
+  <div h-full grid="~ rows-[min-content_1fr_min-content]">
     <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
       <div i-ph-book-duotone />
       <span text-sm>Guide</span>
@@ -19,5 +25,14 @@ useSeoMeta({
     <article class="p6 max-w-none of-auto prose">
       <ContentRenderer v-if="page" :value="page" />
     </article>
+    <div border="t base dashed" px6 py2>
+      <NuxtLink
+        :to="sourceUrl" target="_blank"
+        flex="~ items-center gap-2" op50 hover="text-primary op100"
+      >
+        <div i-ph-note-pencil-duotone />
+        Edit this page
+      </NuxtLink>
+    </div>
   </div>
 </template>
