@@ -8,6 +8,7 @@ export const useGuideStore = defineStore('guide', () => {
   const currentGuide = shallowRef<GuideMeta>()
   const features = ref<PlaygroundFeatures>({})
   const showingSolution = shallowRef(false)
+  const embeddedDocs = shallowRef('')
 
   watch(features, () => {
     if (features.value.fileTree === true) {
@@ -48,11 +49,17 @@ export const useGuideStore = defineStore('guide', () => {
     await mount(currentGuide.value, !showingSolution.value)
   }
 
+  function openEmbeddedDocs(url: string) {
+    embeddedDocs.value = url
+  }
+
   return {
     features,
     currentGuide,
     showingSolution,
+    embeddedDocs,
     mount,
     toggleSolutions,
+    openEmbeddedDocs,
   }
 })

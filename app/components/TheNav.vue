@@ -13,56 +13,61 @@ const id = useId()
 </script>
 
 <template>
-  <nav flex="~ gap-1 items-center" p="x4 y3" border="b base">
+  <nav flex="~ items-center" p="x4 y3" border="b base">
     <NuxtLink to="/" title="Nuxt Tutorial">
       <ContentNuxtTutorialLogo class="h-2em" />
     </NuxtLink>
     <div flex-auto />
-    <button
-      v-if="play.status === 'ready' && guide.features.download !== false"
-      p2 rounded
-      hover="bg-active"
-      title="Download as ZIP"
-      @click="downloadZip(play.webcontainer!)"
+    <div
+      flex="~ gap-1 items-center"
+      :class="guide.embeddedDocs ? 'z-101' : ''"
     >
-      <div i-ph-download-duotone text-2xl />
-    </button>
-    <VDropdown :distance="6" :aria-id="id">
       <button
+        v-if="play.status === 'ready' && guide.features.download !== false"
         p2 rounded
         hover="bg-active"
-        title="Playground Information"
+        title="Download as ZIP"
+        @click="downloadZip(play.webcontainer!)"
       >
-        <div i-ph-info-duotone text-2xl />
+        <div i-ph-download-duotone text-2xl />
       </button>
-      <template #popper>
-        <div px5 py4 grid="~ gap-y-3 gap-x-2 cols-[max-content_1fr] items-center">
-          <div i-ph-package-duotone text-xl />
-          <NuxtLink :to="`${repo}/commit/${runtime.public.gitSha}`" target="_blank" title="View on GitHub">
-            <time :datetime="buildTime.toISOString()" :title="buildTime.toLocaleString()">
-              Built {{ timeAgo }} (<code>{{ runtime.public.gitSha.slice(0, 5) }}</code>)
-            </time>
-          </NuxtLink>
-        </div>
-      </template>
-    </VDropdown>
-    <button
-      p2 rounded
-      title="Toggle terminal"
-      hover="bg-active"
-      :class="ui.showTerminal ? '' : 'op50'"
-      @click="ui.toggleTerminal()"
-    >
-      <div i-ph-terminal-window-duotone text-2xl />
-    </button>
-    <ColorSchemeToggle />
-    <NuxtLink
-      p-2 rounded hover:bg-active
-      title="GitHub"
-      href="https://github.com/oklch/learn.nuxt.com"
-      target="_blank"
-    >
-      <div i-carbon-logo-github text-2xl />
-    </NuxtLink>
+      <VDropdown :distance="6" :aria-id="id">
+        <button
+          p2 rounded
+          hover="bg-active"
+          title="Playground Information"
+        >
+          <div i-ph-info-duotone text-2xl />
+        </button>
+        <template #popper>
+          <div px5 py4 grid="~ gap-y-3 gap-x-2 cols-[max-content_1fr] items-center">
+            <div i-ph-package-duotone text-xl />
+            <NuxtLink :to="`${repo}/commit/${runtime.public.gitSha}`" target="_blank" title="View on GitHub">
+              <time :datetime="buildTime.toISOString()" :title="buildTime.toLocaleString()">
+                Built {{ timeAgo }} (<code>{{ runtime.public.gitSha.slice(0, 5) }}</code>)
+              </time>
+            </NuxtLink>
+          </div>
+        </template>
+      </VDropdown>
+      <button
+        p2 rounded
+        title="Toggle terminal"
+        hover="bg-active"
+        :class="ui.showTerminal ? '' : 'op50'"
+        @click="ui.toggleTerminal()"
+      >
+        <div i-ph-terminal-window-duotone text-2xl />
+      </button>
+      <ColorSchemeToggle />
+      <NuxtLink
+        p-2 rounded hover:bg-active
+        title="GitHub"
+        href="https://github.com/oklch/learn.nuxt.com"
+        target="_blank"
+      >
+        <div i-carbon-logo-github text-2xl />
+      </NuxtLink>
+    </div>
   </nav>
 </template>
