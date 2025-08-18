@@ -2,9 +2,9 @@
   width: 16px;
   margin: 0 -8px;
   background: transparent;
-  z-index: 102;
   position: relative;
   transition: background 0.2s ease;
+  --uno: z-splitter;
 }
 .splitpanes--vertical > .splitpanes__splitter:hover {
   background: #8882;
@@ -23,9 +23,9 @@
   height: 16px;
   margin: -8px 0;
   background: transparent;
-  z-index: 102;
   position: relative;
   transition: background 0.2s ease;
+  --uno: z-splitter;
 }
 .splitpanes--horizontal > .splitpanes__splitter:hover {
   background: #8882;

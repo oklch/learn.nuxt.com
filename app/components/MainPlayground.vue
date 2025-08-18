@@ -69,7 +69,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
       <Splitpanes
         horizontal relative
         class="h-full of-hidden"
-        :class="guide.embeddedDocs ? 'z-101' : ''"
+        :class="guide.embeddedDocs ? 'z-embedded-docs-raised' : ''"
         @resize="startDragging"
         @resized="endDraggingHorizontal"
       >
@@ -94,7 +94,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
   <Transition name="slide-fade">
     <Splitpanes
       v-if="guide.embeddedDocs"
-      inset-0 fixed z-100
+      inset-0 fixed z-embedded-docs
       :class="{ 'splitpanes--dragging': ui.isPanelDragging }"
       @resize="draggingEmbeddedDocs"
       @resized="endDraggingVertical"
@@ -109,7 +109,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
       </Pane>
       <Pane class="relative important-of-visible" :size="100 - ui.panelDocs" :style="panelInitRight">
         <div
-          border="~ base" rounded-full bg-base h-8 w-8 left--4 top-4 absolute z-102
+          border="~ base" rounded-full bg-base h-8 w-8 left--4 top-4 absolute z-embedded-docs-close
         >
           <button
             flex="~ items-center justify-center"

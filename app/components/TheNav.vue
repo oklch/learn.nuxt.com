@@ -20,7 +20,7 @@ const id = useId()
     <div flex-auto />
     <div
       flex="~ gap-1 items-center"
-      :class="guide.embeddedDocs ? 'z-101' : ''"
+      :class="guide.embeddedDocs ? 'z-embedded-docs-raised' : ''"
     >
       <button
         v-if="play.status === 'ready' && guide.features.download !== false"
