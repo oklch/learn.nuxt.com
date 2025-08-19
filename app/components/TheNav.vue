@@ -15,7 +15,7 @@ const id = useId()
 <template>
   <nav flex="~ items-center" p="x4 y3" border="b base">
     <NuxtLink to="/" title="Nuxt Tutorial">
-      <ContentNuxtTutorialLogo class="h-2em" />
+      <NuxtTutorialLogo class="h-2em" />
     </NuxtLink>
     <div flex-auto />
     <div

@@ -9,12 +9,23 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@pinia/nuxt',
     'floating-vue/nuxt',
+    '@nuxtjs/seo',
   ],
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   app: {
     head: {
       titleTemplate: '%s - Nuxt Tutorial',
+      htmlAttrs: {
+        lang: 'en-US',
+      },
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      ],
     },
+  },
+  site: {
+    url: 'https://learnnuxtcom.netlify.app',
+    name: 'Nuxt Tutorial',
   },
   colorMode: {
     classSuffix: '',
@@ -36,6 +47,14 @@ export default defineNuxtConfig({
     public: {
       buildTime: Date.now(),
       gitSha: execaSync('git', ['rev-parse', 'HEAD']).stdout,
+    },
+    app: {
+      devtools: {
+        iframeProps: {
+          allow: 'cross-origin-isolated',
+          credentialless: true,
+        },
+      },
     },
   },
   compatibilityDate: '2025-07-15',

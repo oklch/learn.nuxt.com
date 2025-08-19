@@ -1,3 +1,11 @@
+---
+ogImage:
+  props:
+    title: Nuxt Tutorial
+    colorMode: light
+    description: An interactive tutorial for learning Nuxt
+---
+
 # Welcome to Nuxt Tutorial!
 
 [🚧 Working in Progress](https://github.com/nuxt/learn.nuxt.com#todolist){.text-orange}

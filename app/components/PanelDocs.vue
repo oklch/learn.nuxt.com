@@ -9,6 +9,17 @@ useSeoMeta({
   description: page.value?.description,
 })
 
+if (page.value?.ogImage) {
+  if (page.value.ogImage.props) {
+    defineOgImageComponent('OgImageDocs', page.value.ogImage.props)
+  }
+  else {
+    defineOgImageComponent('OgImageDocs', {
+      colorMode: 'light',
+    })
+  }
+}
+
 const sourceUrl = computed(() =>
   page.value?.id
     ? `https://github.com/oklch/learn.nuxt.com/edit/main/content/${page.value.stem}.${page.value.extension}`
