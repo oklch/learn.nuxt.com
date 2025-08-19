@@ -20,6 +20,7 @@ export default defineConfig({
     ['bg-faded', 'bg-gray:5'],
     ['bg-base', 'bg-white dark:bg-[#020420]'],
     ['text-faded', 'text-gray-600 dark:text-gray:100'],
+    ['bg-code', 'bg-gray:8'],
 
     ['z-embedded-docs', 'z-100'],
     ['z-embedded-docs-raised', 'z-101'],
