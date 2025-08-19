@@ -31,48 +31,6 @@ const sortedDirectory = computed(() => props.directory && Object.fromEntries(
   }),
 ))
 
-const FILE_ICONS = [
-  {
-    match: /\.vue$/,
-    icon: 'i-catppuccin-vue',
-  },
-  {
-    match: /nuxt\.config\.\w+$/,
-    icon: 'i-catppuccin-nuxt',
-  },
-  {
-    match: /package\.json$/,
-    icon: 'i-catppuccin-npm',
-  },
-  {
-    match: /\.[mc]?tsx?$/,
-    icon: 'i-catppuccin-typescript',
-  },
-  {
-    match: /\.[mc]?jsx?$/,
-    icon: 'i-catppuccin-javascript',
-  },
-]
-
-function getFileIcon(filepath: string) {
-  for (const { match, icon } of FILE_ICONS) {
-    if (match.test(filepath))
-      return icon
-  }
-  return 'i-catppuccin-file'
-}
-
-const icon = computed(() => {
-  if (props.directory) {
-    return isDirectoryOpen.value
-      ? 'i-catppuccin-folder-open'
-      : 'i-catppuccin-folder'
-  }
-  else {
-    return getFileIcon(props.name!)
-  }
-})
-
 const folderCaret = computed(() => {
   const icon = 'i-ph-caret-right transition-transform duration-300 op50'
   if (props.directory) {
@@ -100,7 +58,12 @@ const folderCaret = computed(() => {
       @click="handleClick"
     >
       <div :class="folderCaret" flex-none h-4 w-4 />
-      <div :class="icon" flex-none h-4 w-4 light="brightness-60 hue-rotate-180 invert-100 saturate-200" scale-110 />
+      <FileIcon
+        :path="name"
+        :is-directory="!!props.directory"
+        :is-directory-open="isDirectoryOpen"
+        flex-none h-4 w-4 light="brightness-60 hue-rotate-180 invert-100 saturate-200" scale-110
+      />
       <span ml1>{{ name }}</span>
     </button>
     <div v-if="directory" v-show="isDirectoryOpen">

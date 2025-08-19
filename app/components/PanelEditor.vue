@@ -43,35 +43,64 @@ const panelInitEditor = computed(() => isMounted.value || {
 </script>
 
 <template>
-  <div h-full grid="~ rows-[min-content_1fr]">
-    <div flex="~ gap-2 items-center" px4 py2 border="b base dashed" bg-faded>
-      <div i-ph-text-t-duotone />
-      <span text-sm>Editor</span>
-    </div>
-    <Splitpanes
-      h-full of-hidden
-      @resize="startDragging"
-      @resized="endDragging"
+  <Splitpanes
+    h-full of-hidden
+    :class="guide.features.fileTree === false ? 'disabled' : ''"
+    @resize="startDragging"
+    @resized="endDragging"
+  >
+    <Pane
+      flex="~ col" h-full of-auto
+      :size="ui.panelFileTree"
+      :style="panelInitFileTree"
     >
-      <Pane
-        flex="~ col" py1 h-full of-auto
-        :size="ui.panelFileTree"
-        :style="panelInitFileTree"
-      >
-        <PanelEditorFileSystemTree :directory="directory" :depth="-1" />
-      </Pane>
-      <PaneSplitter />
-      <Pane
-        :size="100 - ui.panelFileTree"
-        :style="panelInitEditor"
-      >
+      <div h-full grid="~ rows-[min-content_1fr]">
+        <div
+          flex="~ gap-2 items-center"
+          border="b base dashed"
+          px4 py2 bg-faded
+        >
+          <div i-ph-tree-structure-duotone />
+          <span text-sm>Files</span>
+        </div>
+        <div py2>
+          <PanelEditorFileSystemTree
+            v-model="play.fileSelected"
+            :directory="directory"
+            :depth="-1"
+          />
+        </div>
+      </div>
+    </Pane>
+    <PaneSplitter />
+    <Pane
+      :size="100 - ui.panelFileTree"
+      :style="panelInitEditor"
+    >
+      <div h-full grid="~ rows-[min-content_1fr]">
+        <div flex="~ gap-2 items-center" px4 py2 border="b base dashed" bg-faded>
+          <FileIcon :path="play.fileSelected?.filepath || ''" />
+          <span text-sm>{{ play.fileSelected?.filepath || 'Editor' }}</span>
+          <div flex-auto />
+          <button
+            v-if="guide.currentGuide?.solutions"
+            text-sm my--1 mr--3 px2 py1 rounded op50
+            hover="bg-active op100"
+            flex="~ gap-2 items-center"
+            @click="guide.toggleSolutions()"
+          >
+            <div v-if="!guide.showingSolution " i-ph-lightbulb-filament-duotone />
+            <div v-else i-ph-arrow-counter-clockwise-duotone />
+            {{ guide.showingSolution ? 'Reset challenge' : 'Show solution' }}
+          </button>
+        </div>
         <LazyPanelEditorMonaco
           v-if="play.fileSelected"
           v-model="input"
           class="h-full w-full"
           :filepath="play.fileSelected.filepath"
         />
-      </Pane>
-    </Splitpanes>
-  </div>
+      </div>
+    </Pane>
+  </Splitpanes>
 </template>

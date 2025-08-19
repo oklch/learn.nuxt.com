@@ -1,12 +1,17 @@
 import type { GuideMeta, PlaygroundFeatures } from '~/types/guides'
 
+const defaultFeatures: PlaygroundFeatures = Object.freeze({
+  fileTree: false,
+  terminal: false,
+})
+
 export const useGuideStore = defineStore('guide', () => {
   const play = usePlaygroundStore()
   const ui = useUiStore()
   const preview = usePreviewStore()
 
   const currentGuide = shallowRef<GuideMeta>()
-  const features = ref<PlaygroundFeatures>({})
+  const features = ref<PlaygroundFeatures>(defaultFeatures)
   const showingSolution = shallowRef(false)
   const embeddedDocs = shallowRef('')
 
@@ -40,7 +45,7 @@ export const useGuideStore = defineStore('guide', () => {
     preview.location.fullPath = guide?.startingUrl || '/'
     preview.updateUrl()
 
-    features.value = guide?.features || {}
+    features.value = guide?.features || { ...defaultFeatures }
     currentGuide.value = guide
     showingSolution.value = withSolution
   }
