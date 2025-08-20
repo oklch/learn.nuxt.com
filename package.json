@@ -55,6 +55,7 @@
     "execa": "^9.6.0",
     "fast-glob": "^3.3.3",
     "nuxt-icon": "1.0.0-beta.7",
+    "rehype-external-links": "^3.0.0",
     "theme-vitesse": "^1.0.0",
     "typescript": "^5.9.2",
     "unocss": "^66.4.2"

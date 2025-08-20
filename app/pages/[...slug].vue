@@ -35,7 +35,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div of-hidden>
     <MainPlayground />
     <CommandPalette />
   </div>

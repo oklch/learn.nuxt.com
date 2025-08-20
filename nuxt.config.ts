@@ -34,6 +34,15 @@ export default defineNuxtConfig({
     experimental: { sqliteConnector: 'native' },
     build: {
       markdown: {
+        rehypePlugins:
+        {
+          'rehype-external-links': {
+            options: {
+              target: '_blank',
+              rel: ['nofollow', 'noopener', 'noreferrer'],
+            },
+          },
+        },
         highlight: {
           theme: {
             default: 'vitesse-light',
@@ -66,6 +75,9 @@ export default defineNuxtConfig({
           'Cross-Origin-Opener-Policy': 'same-origin',
         },
       },
+    },
+    externals: {
+      inline: ['unhead'],
     },
   },
   vite: {
