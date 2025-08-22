@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ContentNavigationItem } from '@nuxt/content'
+
 const route = useRoute()
 const { data: page } = await useAsyncData(route.path, () => {
   return queryCollection('content').path(route.path).first()
@@ -28,7 +30,7 @@ const sourceUrl = computed(() =>
 
 const ui = useUiStore()
 
-const { data: navigation } = useAsyncData(`navigation`, () => {
+const { data: navigation } = useAsyncData('navigation', () => {
   return queryCollectionNavigation('content')
 })
 
@@ -39,21 +41,72 @@ const { data: surroundings } = useAsyncData(`${route.path}-surroundings`, () => 
 }, { watch: [() => route.path] })
 const prev = computed(() => surroundings.value?.[0])
 const next = computed(() => surroundings.value?.[1])
+
+interface BreadcrumbItem {
+  title: string
+  path?: string
+}
+const contentPath = computed(() => page.value?.path)
+
+function findNavItemFromPath(
+  path: string,
+  items: ContentNavigationItem[] | undefined = navigation.value,
+): ContentNavigationItem | undefined {
+  const item = items?.find(i => i.path === path)
+  if (item)
+    return item
+
+  const parts = path.split('/').filter(Boolean)
+  for (let i = parts.length - 1; i > 0; i--) {
+    const parentPath = `/${parts.slice(0, i).join('/')}`
+    const parent = items?.find(i => i.path === parentPath)
+    if (parent)
+      return findNavItemFromPath(path, parent.children || [])
+  }
+}
+
+const breadcrumbs = computed(() => {
+  const parts = contentPath.value?.split('/').filter(Boolean) || []
+  const breadcrumbs = parts
+    .map((_, idx): BreadcrumbItem => {
+      const path = `/${parts.slice(0, idx + 1).join('/')}`
+      const item = findNavItemFromPath(path)
+      return {
+        title: item?.title || 'Not found',
+        path: item ? path : undefined,
+      }
+    })
+
+  if (!breadcrumbs.find(i => i.path === '/')) {
+    breadcrumbs.unshift({
+      title: 'Guide',
+      path: '/',
+    })
+  }
+  return breadcrumbs
+})
 </script>
 
 <template>
   <div h-full grid="~ rows-[min-content_1fr_min-content]">
-    <button
-      flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded
-      @click="ui.isContentDropdownShown = !ui.isContentDropdownShown"
-    >
+    <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
       <div i-ph-book-duotone />
-      <NuxtLink to="/" text-sm>
-        Guide
-      </NuxtLink>
-      <div flex-auto />
-      <div i-ph-caret-down-duotone text-sm op50 transition duration-400 :class="ui.isContentDropdownShown ? 'rotate-180' : ''" />
-    </button>
+      <template v-for="(bc, idx) in breadcrumbs" :key="bc.path">
+        <div v-if="idx !== 0" i-ph-caret-right text-sm mx--1 op50 />
+        <NuxtLink :to="bc.path" text-sm hover="underline underline-dashed text-primary">
+          {{ bc.title }}
+        </NuxtLink>
+      </template>
+      <button
+        flex-auto h-full
+        @click="ui.isContentDropdownShown = !ui.isContentDropdownShown"
+      />
+      <button
+        i-ph-caret-down-duotone text-sm ml-auto op50 transition duration-400
+        :class="ui.isContentDropdownShown ? 'rotate-180' : ''"
+        @click="ui.isContentDropdownShown = !ui.isContentDropdownShown"
+      />
+    </div>
     <div h-full relative of-hidden>
       <article class="p6 h-full max-w-none of-auto prose">
         <ContentRenderer v-if="page" :value="page" />
