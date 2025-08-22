@@ -56,6 +56,7 @@ export default defineNuxtConfig({
     public: {
       buildTime: Date.now(),
       gitSha: execaSync('git', ['rev-parse', 'HEAD']).stdout,
+      repoUrl: 'https://github.com/oklch/learn.nuxt.com',
     },
     app: {
       devtools: {

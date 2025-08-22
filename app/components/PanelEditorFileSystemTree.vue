@@ -59,10 +59,10 @@ const folderCaret = computed(() => {
     >
       <div :class="folderCaret" flex-none h-4 w-4 />
       <FileIcon
+        flex-none h-4 w-4
         :path="name"
         :is-directory="!!props.directory"
         :is-directory-open="isDirectoryOpen"
-        flex-none h-4 w-4 light="brightness-60 hue-rotate-180 invert-100 saturate-200" scale-110
       />
       <span ml1>{{ name }}</span>
     </button>

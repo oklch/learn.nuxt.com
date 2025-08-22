@@ -22,9 +22,10 @@ if (page.value?.ogImage) {
   }
 }
 
+const runtime = useRuntimeConfig()
 const sourceUrl = computed(() =>
   page.value?.id
-    ? `https://github.com/oklch/learn.nuxt.com/edit/main/content/${page.value.stem}.${page.value.extension}`
+    ? `${runtime.public.repoUrl}/edit/main/content/${page.value.stem}.${page.value.extension}`
     : undefined,
 )
 

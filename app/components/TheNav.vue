@@ -6,7 +6,6 @@ const commands = useCommandsStore()
 
 const runtime = useRuntimeConfig()
 
-const repo = 'https://github.com/oklch/learn.nuxt.com'
 const buildTime = new Date(runtime.public.buildTime)
 const timeAgo = useTimeAgo(buildTime)
 
@@ -41,7 +40,7 @@ addCommands(
       <NuxtTutorialLogo class="h-2em" />
     </NuxtLink>
     <NuxtLink
-      :href="repo"
+      :href="runtime.public.repoUrl"
       target="_blank"
     >
       <div text-xs text-orange px2 py1 rounded bg-orange:10 block translate-y--2>
@@ -81,7 +80,7 @@ addCommands(
         <template #popper>
           <div px5 py4 grid="~ gap-y-3 gap-x-2 cols-[max-content_1fr] items-center">
             <div i-ph-package-duotone text-xl />
-            <NuxtLink :to="`${repo}/commit/${runtime.public.gitSha}`" target="_blank" title="View on GitHub">
+            <NuxtLink :to="`${runtime.public.repoUrl}/commit/${runtime.public.gitSha}`" target="_blank" title="View on GitHub">
               <time :datetime="buildTime.toISOString()" :title="buildTime.toLocaleString()">
                 Built {{ timeAgo }} (<code>{{ runtime.public.gitSha.slice(0, 5) }}</code>)
               </time>
@@ -102,7 +101,7 @@ addCommands(
       <NuxtLink
         p-2 rounded hover:bg-active
         title="GitHub"
-        :href="repo"
+        :href="runtime.public.repoUrl"
         target="_blank"
       >
         <div i-carbon-logo-github text-2xl />

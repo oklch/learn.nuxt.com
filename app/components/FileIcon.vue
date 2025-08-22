@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { path, isDirectory, isDirectoryOpen } = defineProps<{
+const props = defineProps<{
   path: string
   isDirectory?: boolean
   isDirectoryOpen?: boolean
@@ -28,26 +28,20 @@ const FILE_ICONS = [
   },
 ]
 
-function getFileIcon(filepath: string) {
-  for (const { match, icon } of FILE_ICONS) {
-    if (match.test(filepath))
-      return icon
-  }
-  return 'i-catppuccin-file'
-}
-
 const icon = computed(() => {
-  if (isDirectory) {
-    return isDirectoryOpen
+  if (props.isDirectory) {
+    return props.isDirectoryOpen
       ? 'i-catppuccin-folder-open'
       : 'i-catppuccin-folder'
   }
-  else {
-    return getFileIcon(path)
+  for (const { match, icon } of FILE_ICONS) {
+    if (match.test(props.path))
+      return icon
   }
+  return 'i-catppuccin-file'
 })
 </script>
 
 <template>
-  <div :class="icon" />
+  <div :class="icon" light="brightness-60 hue-rotate-180 invert-100 saturate-200" scale-110 />
 </template>
