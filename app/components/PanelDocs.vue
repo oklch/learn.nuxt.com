@@ -31,6 +31,14 @@ const ui = useUiStore()
 const { data: navigation } = useAsyncData(`navigation`, () => {
   return queryCollectionNavigation('content')
 })
+
+const { data: surroundings } = useAsyncData(`${route.path}-surroundings`, () => {
+  return queryCollectionItemSurroundings('content', route.path, {
+    fields: ['title', 'description'],
+  })
+}, { watch: [() => route.path] })
+const prev = computed(() => surroundings.value?.[0])
+const next = computed(() => surroundings.value?.[1])
 </script>
 
 <template>
@@ -49,6 +57,29 @@ const { data: navigation } = useAsyncData(`navigation`, () => {
     <div h-full relative of-hidden>
       <article class="p6 h-full max-w-none of-auto prose">
         <ContentRenderer v-if="page" :value="page" />
+        <div mt8 py2 grid="~ cols-[1fr_1fr] gap-4">
+          <div>
+            <ContentNavCard
+              v-if="prev"
+              :to="prev.path"
+              :title="prev.title"
+              :description="prev.description as string"
+              subheader="Previous section"
+              icon="i-ph-arrow-left"
+            />
+          </div>
+          <div>
+            <ContentNavCard
+              v-if="next"
+              :to="next.path"
+              :title="next.title"
+              :description="next.description as string"
+              subheader="Next section"
+              icon="i-ph-arrow-right"
+              text-right items-end
+            />
+          </div>
+        </div>
       </article>
       <!-- Navigation Dropdown -->
       <Transition name="nav-dropdown">
