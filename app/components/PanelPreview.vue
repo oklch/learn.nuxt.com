@@ -7,6 +7,8 @@ const preview = usePreviewStore()
 const inputUrl = ref<string>('')
 syncRef(computed(() => preview.location.fullPath), inputUrl, { direction: 'ltr' })
 
+const guide = useGuideStore()
+
 function refreshIframe() {
   if (preview.url && inner.value?.iframe?.value) {
     inner.value.iframe.value.src = preview.url
@@ -35,7 +37,7 @@ function navigate() {
         <div i-ph-globe-duotone />
         <span text-sm>Preview</span>
       </div>
-      <div px-2 py1>
+      <div v-if="guide.features.navigation" px-2 py1>
         <div
           flex="~ items-center justify-center" text-sm mx-auto px2 rounded bg-faded border="base 1 hover:gray-500/30"
           :class="{ 'pointer-events-none': !preview.url }"

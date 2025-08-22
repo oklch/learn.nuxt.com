@@ -12,4 +12,5 @@ export interface PlaygroundFeatures {
   terminal?: boolean
   fileTree?: boolean
   download?: boolean
+  navigation?: boolean
 }

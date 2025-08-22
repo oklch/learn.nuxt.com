@@ -27,3 +27,7 @@ body {
 button {
   cursor: pointer;
 }
+
+* {
+  min-width: 0;
+}
