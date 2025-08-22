@@ -88,7 +88,7 @@ const breadcrumbs = computed(() => {
 </script>
 
 <template>
-  <div h-full grid="~ rows-[min-content_1fr_min-content]">
+  <div h-full grid="~ rows-[min-content_1fr]">
     <div flex="~ gap-2 items-center" border="b base dashed" px4 py2 bg-faded>
       <div i-ph-book-duotone />
       <template v-for="(bc, idx) in breadcrumbs" :key="bc.path">
@@ -133,6 +133,18 @@ const breadcrumbs = computed(() => {
             />
           </div>
         </div>
+        <div border="t base dashed" mt-8 p3>
+          <NuxtLink
+            v-if="sourceUrl"
+            :to="sourceUrl" target="_blank"
+            flex="~ items-center gap-2"
+            text-inherit op75
+            hover="text-primary op100"
+          >
+            <div i-ph-note-pencil-duotone />
+            Edit this page
+          </NuxtLink>
+        </div>
       </article>
       <!-- Navigation Dropdown -->
       <Transition name="nav-dropdown">
@@ -147,16 +159,6 @@ const breadcrumbs = computed(() => {
           <ContentNavItem v-for="item in navigation" :key="item.path" :item="item" />
         </div>
       </Transition>
-    </div>
-    <div border="t base dashed" px6 py2>
-      <NuxtLink
-        v-if="sourceUrl"
-        :to="sourceUrl" target="_blank"
-        flex="~ items-center gap-2" op50 hover="text-primary op100"
-      >
-        <div i-ph-note-pencil-duotone />
-        Edit this page
-      </NuxtLink>
     </div>
   </div>
 </template>

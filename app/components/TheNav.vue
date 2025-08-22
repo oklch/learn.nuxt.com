@@ -40,6 +40,14 @@ addCommands(
     <NuxtLink to="/" title="Nuxt Tutorial">
       <NuxtTutorialLogo class="h-2em" />
     </NuxtLink>
+    <NuxtLink
+      href="https://github.com/oklch/learn.nuxt.com"
+      target="_blank"
+    >
+      <div text-xs text-orange px2 py1 rounded bg-orange:10 block translate-y--2>
+        Work in Progress
+      </div>
+    </NuxtLink>
     <div flex-auto />
     <div
       flex="~ gap-1 items-center"

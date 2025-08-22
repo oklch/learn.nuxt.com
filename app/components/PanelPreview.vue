@@ -27,32 +27,50 @@ function navigate() {
 </script>
 
 <template>
-  <div class="h-full w-full of-hidden" :class="play.status === 'ready' ? ' grid grid-rows-[min-content_1fr]' : 'flex'">
+  <div h-full :class="play.status === 'ready' ? ' grid grid-rows-[min-content_1fr]' : 'flex'">
     <div
       v-if="play.status === 'ready'"
-      border="b base dashed" pl4 pr2 bg-faded
       flex="~ items-center gap-2"
+      border="b base dashed" pl1 pr2 bg-faded
     >
-      <div flex="~ gap-2 items-center" py2>
+      <div
+        v-if="guide.features.navigation"
+        flex="~ auto gap-2 items-center"
+        border="~ base"
+        tracking-wide m1.5 px2 py0.5 rounded bg-faded
+      >
+        <div i-ph-globe-duotone />
+        <span text-sm op50>Preview</span>
+        <div
+          text-sm
+          flex="~ items-center justify-center auto"
+          :class="{
+            'pointer-events-none': !preview.url,
+          }"
+        >
+          <form w-full @submit.prevent="navigate">
+            <input
+              v-model="inputUrl" type="text"
+              bg-transparent flex-1 w-full focus:outline-none
+            >
+          </form>
+        </div>
+      </div>
+      <div
+        v-else
+        flex="~ gap-2 auto items-center" px2 py2
+      >
         <div i-ph-globe-duotone />
         <span text-sm>Preview</span>
       </div>
-      <div v-if="guide.features.navigation" px-2 py1>
-        <div
-          flex="~ items-center justify-center" text-sm mx-auto px2 rounded bg-faded border="base 1 hover:gray-500/30"
-          :class="{ 'pointer-events-none': !preview.url }"
-        >
-          <form @submit.prevent="navigate">
-            <input v-model="inputUrl" type="text" bg-transparent flex-1 focus:outline-none>
-          </form>
-          <div flex="~ items-center justify-end">
-            <button v-if="preview.url" mx1 op-75 hover:op-100 @click="refreshIframe">
-              <div i-ph-arrow-clockwise-duotone text-sm />
-            </button>
-          </div>
-        </div>
-      </div>
-      <div flex-auto />
+      <button
+        p1 rounded
+        hover="bg-active"
+        title="Refresh Preview"
+        @click="refreshIframe"
+      >
+        <div i-ph-arrow-clockwise-duotone text-lg />
+      </button>
       <VDropdown :distance="6">
         <button
           p1 rounded
