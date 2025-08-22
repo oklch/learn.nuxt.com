@@ -2,6 +2,7 @@
 const ui = useUiStore()
 const play = usePlaygroundStore()
 const guide = useGuideStore()
+const commands = useCommandsStore()
 
 const runtime = useRuntimeConfig()
 
@@ -52,6 +53,14 @@ addCommands(
         @click="downloadZip(play.webcontainer!)"
       >
         <div i-ph-download-duotone text-2xl />
+      </button>
+      <button
+        p2 rounded
+        hover="bg-active"
+        title="Search"
+        @click="commands.isShown = true"
+      >
+        <div i-ph-magnifying-glass-duotone text-2xl />
       </button>
       <VDropdown :distance="6" :aria-id="id">
         <button

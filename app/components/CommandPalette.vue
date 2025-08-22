@@ -87,7 +87,10 @@ useEventListener('keydown', (e) => {
     v-if="commands.isShown"
     inset-0 fixed z-command-palette flex="~ items-center justify-center"
   >
-    <div bg-black:75 inset-0 absolute z--1 />
+    <div
+      bg-black:75 inset-0 absolute z--1
+      @click="commands.isShown = false"
+    />
     <div
       border="~ base rounded"
       bg-base h-100 w-200
@@ -102,15 +105,14 @@ useEventListener('keydown', (e) => {
           placeholder="Search..."
         >
       </div>
-
-      <div border="t base" py2 of-auto>
+      <div border="t base" py2 of-auto flex="~ col">
         <component
           :is="c.to ? NuxtLink : 'button'"
           v-for="c, idx in commands.commandsResult"
           :key="c.id || c.title"
           :ref="(el: any) => selected === idx && scrollIntoView(el)"
           :to="c.to"
-          flex="~ gap-2 items-center" mx1 p2 px3 rounded w-full
+          flex="~ gap-2 items-center" mx1 p2 px3 rounded
           hover:bg-active
           :class="selected === idx ? 'bg-active' : ''"
           @click="runCommand(c)"
