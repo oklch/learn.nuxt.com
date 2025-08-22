@@ -60,6 +60,7 @@ function read(stream: ReadableStream<string>) {
       if (done)
         return
       terminal.write(value)
+      terminal.scrollToBottom()
       readNext()
     })
   }
@@ -77,6 +78,7 @@ watch(() => play.currentProcess, (p) => {
       terminal.writeln('')
       terminal.writeln(`-------------`)
       terminal.writeln('')
+      terminal.scrollToBottom()
     }
     try {
       read(p.output)
