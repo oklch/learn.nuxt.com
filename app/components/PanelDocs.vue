@@ -4,6 +4,8 @@ const { data: page } = await useAsyncData(route.path, () => {
   return queryCollection('content').path(route.path).first()
 }, { watch: [() => route.path] })
 
+console.log(page.value)
+
 useSeoMeta({
   title: page.value?.title,
   description: page.value?.description,

@@ -6,6 +6,7 @@ const commands = useCommandsStore()
 const router = useRouter()
 
 const selected = ref(0)
+const input = useTemplateRef('input')
 
 function move(delta: number) {
   selected.value += delta
@@ -22,6 +23,35 @@ function runCommand(command: Command) {
     router.push(command.to)
   commands.isShown = false
 }
+
+function scrollIntoView(elOrComponent?: any) {
+  const el = elOrComponent?.$el || elOrComponent
+  el?.scrollIntoView?.({
+    block: 'nearest',
+    inline: 'nearest',
+  })
+}
+
+// Reset selected when search changes
+watch(
+  () => commands.search,
+  () => {
+    selected.value = 0
+  },
+)
+
+watch(
+  () => commands.isShown,
+  () => {
+    if (commands.isShown) {
+      commands.search = ''
+      // Auto-focus on input open (nextTick because DOM not updated yet)
+      nextTick(() => {
+        input.value?.focus()
+      })
+    }
+  },
+)
 
 useEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -58,23 +88,29 @@ useEventListener('keydown', (e) => {
     inset-0 fixed z-command-palette flex="~ items-center justify-center"
   >
     <div bg-black:75 inset-0 absolute z--1 />
-    <div border="~ base rounded" bg-base h-100 w-200>
+    <div
+      border="~ base rounded"
+      bg-base h-100 w-200
+      flex="~ col"
+    >
       <div flex="~ items-center">
         <div class="i-ph-magnifying-glass-duotone" text-xl m4 />
         <input
+          ref="input"
           v-model="commands.search"
           p4 pl0 outline-none border-none h-full w-full
           placeholder="Search..."
         >
       </div>
 
-      <div border="t base">
+      <div border="t base" py2 of-auto>
         <component
           :is="c.to ? NuxtLink : 'button'"
           v-for="c, idx in commands.commandsResult"
           :key="c.id || c.title"
+          :ref="(el: any) => selected === idx && scrollIntoView(el)"
           :to="c.to"
-          flex="~ gap-2 items-center" mx1 p2 px3 rounded
+          flex="~ gap-2 items-center" mx1 p2 px3 rounded w-full
           hover:bg-active
           :class="selected === idx ? 'bg-active' : ''"
           @click="runCommand(c)"

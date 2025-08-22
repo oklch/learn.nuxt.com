@@ -10,6 +10,28 @@ const buildTime = new Date(runtime.public.buildTime)
 const timeAgo = useTimeAgo(buildTime)
 
 const id = useId()
+
+addCommands(
+  {
+    id: 'download-zip',
+    title: 'Download playground as ZIP',
+    visible: () => {
+      return play.status === 'ready' && guide.features.download !== false
+    },
+    handler: () => {
+      downloadZip(play.webcontainer!)
+    },
+    icon: 'i-ph-download-duotone',
+  },
+  {
+    id: 'toggle-terminal',
+    title: 'Toggle terminal',
+    handler: () => {
+      ui.toggleTerminal()
+    },
+    icon: 'i-ph-terminal-window-duotone',
+  },
+)
 </script>
 
 <template>

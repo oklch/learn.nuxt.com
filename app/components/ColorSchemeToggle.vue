@@ -39,6 +39,22 @@ function toggleMode(event: MouseEvent) {
       )
     })
 }
+
+addCommands(
+  {
+    id: 'toggle-color-mode',
+    title: colorMode.value === 'light'
+      ? 'Switch to dark mode'
+      : 'Switch to light mode',
+    handler: () => toggleMode({
+      clientX: window.innerWidth / 2,
+      clientY: window.innerHeight / 2,
+    } as MouseEvent),
+    icon: colorMode.value === 'light'
+      ? 'i-ph-moon-stars-duotone'
+      : 'i-ph-sun-dim-duotone',
+  },
+)
 </script>
 
 <template>
