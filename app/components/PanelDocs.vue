@@ -86,6 +86,14 @@ const breadcrumbs = computed(() => {
   }
   return breadcrumbs
 })
+
+const docsEl = useTemplateRef('docs')
+const router = useRouter()
+router.beforeEach(() => {
+  docsEl.value?.scrollTo({
+    top: 0,
+  })
+})
 </script>
 
 <template>
@@ -109,7 +117,7 @@ const breadcrumbs = computed(() => {
       />
     </div>
     <div h-full relative of-hidden>
-      <article class="p6 h-full max-w-none of-auto prose">
+      <article ref="docs" class="p6 h-full max-w-none of-auto prose">
         <ContentRenderer v-if="page" :value="page" />
         <div mt8 py2 grid="~ cols-[1fr_1fr] gap-4">
           <div>
@@ -155,7 +163,7 @@ const breadcrumbs = computed(() => {
           border="b base"
           py2 bg-base bg-opacity-80 max-h-60vh
           left-0 right-0 top-0 absolute
-          backdrop-blur-10
+          of-auto backdrop-blur-10
         >
           <ContentNavItem v-for="item in navigation" :key="item.path" :item="item" />
         </div>
