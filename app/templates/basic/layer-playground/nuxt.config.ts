@@ -1,3 +1,4 @@
+import { defineNuxtConfig } from 'nuxt/config'
 import { version as versionNuxt } from 'nuxt/package.json'
 import { version as versionVue } from 'vue'
 
@@ -22,6 +23,14 @@ export default defineNuxtConfig({
         'ufo',
         'ofetch',
         'defu',
+      ],
+    },
+  },
+  typescript: {
+    includeWorkspace: true,
+    tsConfig: {
+      include: [
+        '../layer-playground/**/*',
       ],
     },
   },

@@ -1,4 +1,4 @@
-import type { FrameFunctions, ParentFunctions } from '../../../../types/rpc'
+import type { ClientInfo, FrameFunctions, ParentFunctions } from '../../../../types/rpc'
 import { createBirpc } from 'birpc'
 
 export default defineNuxtPlugin(() => {
@@ -20,7 +20,7 @@ export default defineNuxtPlugin(() => {
   })
 
   const runtimeConfig = useRuntimeConfig()
-  rpc.onReady(toRaw(runtimeConfig.public.clientInfo))
+  rpc.onReady(toRaw(runtimeConfig.public.clientInfo as ClientInfo))
 })
 
 function createRpc(frameFunctions: FrameFunctions) {

@@ -12,6 +12,7 @@ catalogs:
     eslint: ^9.33.0
     eslint-plugin-format: ^1.0.1
     typescript: ^5.9.2
+    vue-tsc: ^3.0.6
   front:
     '@shikijs/monaco': ^3.9.2
     '@volar/monaco': ^1.11.1

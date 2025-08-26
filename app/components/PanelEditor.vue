@@ -17,9 +17,9 @@ const debouncedWrite = useDebounceFn((value: string) => {
   play.fileSelected?.write(value)
 }, 300)
 
-watch(input, (currentInput, previousInput) => {
-  if (currentInput != null && currentInput !== previousInput) {
-    debouncedWrite(currentInput)
+watch(input, () => {
+  if (input.value != null) {
+    debouncedWrite(input.value)
   }
 })
 

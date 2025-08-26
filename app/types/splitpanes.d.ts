@@ -1,7 +1,7 @@
 declare module 'splitpanes' {
   import type { Component } from 'vue'
 
-  export interface SplitpaneProps {
+  export interface SplitpanesProps {
     horizontal: boolean
     pushOtherPanes: boolean
     dblClickSplitter: boolean
@@ -14,7 +14,6 @@ declare module 'splitpanes' {
     maxSize: number | string
   }
 
-  export type Pane = Component<PaneProps>
-  export const Pane: Pane
-  export const Splitpanes: Component<SplitpaneProps>
+  export const Pane: Component<PaneProps>
+  export const Splitpanes: Component<SplitpanesProps>
 }

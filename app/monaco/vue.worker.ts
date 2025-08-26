@@ -19,15 +19,15 @@ export interface CreateData {
 }
 
 /**
- * Pathes that we know won't exists, we can skip them to improve performance
+ * Paths that we know won't exists, we can skip them to improve performance
  */
-const invalidPathes = [
+const invalidPaths = [
   /\/@types\/(vue|typescript)/,
   /\/@typescript\//,
 ]
 
 function isInvalidPath(filepath: string) {
-  return invalidPathes.some(re => re.test(filepath))
+  return invalidPaths.some(re => re.test(filepath))
 }
 
 // eslint-disable-next-line no-restricted-globals

@@ -2,7 +2,7 @@
 import type { FrameFunctions, ParentFunctions } from '~/types/rpc'
 import { createBirpc } from 'birpc'
 
-const iframeEl = useTemplateRef<HTMLIFrameElement>('iframeEl')
+const iframe = useTemplateRef<HTMLIFrameElement>('iframe')
 
 const ui = useUiStore()
 const play = usePlaygroundStore()
@@ -25,7 +25,7 @@ const parentFunctions: ParentFunctions = {
 
 const rpc = createBirpc<FrameFunctions, ParentFunctions>(parentFunctions, {
   post: (payload) => {
-    iframeEl.value?.contentWindow?.postMessage({
+    iframe.value?.contentWindow?.postMessage({
       source: 'nuxt-playground-parent',
       payload,
     }, '*')
@@ -48,12 +48,16 @@ watch(
   syncColorMode,
   { flush: 'sync' },
 )
+
+defineExpose({
+  iframe
+})
 </script>
 
 <template>
   <iframe
     v-if="preview.url"
-    ref="iframeEl"
+    ref="iframe"
     :src="preview.url"
     class="bg-transparent h-full w-full inset-0 absolute"
     :style="play.status === 'ready' ? '' : 'visibility: hidden;'"

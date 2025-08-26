@@ -23,6 +23,7 @@ const theme = computed<ITheme>(() => {
 
 const root = useTemplateRef<HTMLDivElement>('root')
 const terminal = new Terminal({
+  customGlyphs: true,
   allowTransparency: true,
   theme: theme.value,
   fontFamily: 'DM Mono, monospace',
