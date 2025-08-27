@@ -8,7 +8,6 @@ import {
   presetWebFonts,
   presetWind4,
   transformerDirectives,
-  transformerVariantGroup,
 } from 'unocss'
 
 export default defineConfig({
@@ -19,6 +18,8 @@ export default defineConfig({
     ['bg-base', 'bg-white dark:bg-[#020420]'],
     ['text-faded', 'text-gray-600 dark:text-gray:100'],
     ['bg-code', 'bg-gray:8'],
+    ['bg-inline-code', 'bg-gray-100 dark:bg-gray-800/75'],
+    ['border-inline-code', 'border-gray-200 dark:border-gray-700/75'],
 
     ['z-embedded-docs', 'z-100'],
     ['z-embedded-docs-raised', 'z-101'],
@@ -54,7 +55,6 @@ export default defineConfig({
   ],
   transformers: [
     transformerDirectives(),
-    transformerVariantGroup(),
   ],
   extractors: [
     extractorMdc(),

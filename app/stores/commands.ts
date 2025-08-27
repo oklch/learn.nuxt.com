@@ -28,8 +28,10 @@ export const useCommandsStore = defineStore('commands', () => {
 
   const debouncedSearch = refDebounced(search, 100)
 
-  const { data: sections } = useAsyncData(`search-sections`, () => {
-    return queryCollectionSearchSections('content')
+  const { locale } = useI18n()
+
+  const { data: sections } = useAsyncData(`${locale.value}-search-sections`, () => {
+    return queryCollectionSearchSections(locale.value as 'en')
   })
 
   watch(debouncedSearch, async (v) => {

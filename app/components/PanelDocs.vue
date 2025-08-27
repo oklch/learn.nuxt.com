@@ -31,12 +31,14 @@ const sourceUrl = computed(() =>
 
 const ui = useUiStore()
 
-const { data: navigation } = useAsyncData('navigation', () => {
-  return queryCollectionNavigation('content')
+const { locale } = useI18n()
+
+const { data: navigation } = useAsyncData(`${locale.value}-navigation`, () => {
+  return queryCollectionNavigation(locale.value as 'en')
 })
 
-const { data: surroundings } = useAsyncData(`${route.path}-surroundings`, () => {
-  return queryCollectionItemSurroundings('content', route.path, {
+const { data: surroundings } = useAsyncData(`${locale.value}-${route.path}-surroundings`, () => {
+  return queryCollectionItemSurroundings(locale.value as 'en', route.path, {
     fields: ['title', 'description'],
   })
 }, { watch: [() => route.path] })

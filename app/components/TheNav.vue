@@ -11,6 +11,8 @@ const timeAgo = useTimeAgo(buildTime)
 
 const id = useId()
 
+const i18n = useI18n()
+
 addCommands(
   {
     id: 'download-zip',
@@ -30,6 +32,17 @@ addCommands(
       ui.toggleTerminal()
     },
     icon: 'i-ph-terminal-window-duotone',
+  },
+  {
+    id: 'language-en',
+    title: 'Change to English',
+    handler: () => {
+      i18n.setLocale('en')
+    },
+    icon: 'i-ph-globe-duotone',
+    visible: () => {
+      return i18n.locale.value !== 'en'
+    },
   },
 )
 </script>
@@ -61,6 +74,28 @@ addCommands(
       >
         <div i-ph-download-duotone text-2xl />
       </button>
+      <VDropdown :distance="6">
+        <button
+          p2 rounded
+          hover="bg-active"
+          title="Languages"
+        >
+          <div i-ph-translate-duotone text-2xl />
+        </button>
+        <template #popper>
+          <div flex="~ col gap-y-1" p2>
+            <button
+              v-for="locale of i18n.locales.value" :key="locale.code"
+              px2 py1 rounded
+              hover="bg-active"
+              :class="locale.code === i18n.locale.value ? 'text-primary' : ''"
+              @click="i18n.setLocale(locale.code)"
+            >
+              {{ locale.name }}
+            </button>
+          </div>
+        </template>
+      </VDropdown>
       <button
         p2 rounded
         hover="bg-active"

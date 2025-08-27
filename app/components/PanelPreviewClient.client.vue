@@ -50,7 +50,7 @@ watch(
 )
 
 defineExpose({
-  iframe
+  iframe,
 })
 </script>
 

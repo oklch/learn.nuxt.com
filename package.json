@@ -45,6 +45,7 @@
     "@nuxt/content": "catalog:nuxt",
     "@nuxt/eslint": "catalog:nuxt",
     "@nuxtjs/color-mode": "catalog:nuxt",
+    "@nuxtjs/i18n": "catalog:nuxt",
     "@nuxtjs/seo": "catalog:nuxt",
     "@pinia/nuxt": "catalog:nuxt",
     "@unocss/eslint-plugin": "catalog:dev",

@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'floating-vue/nuxt',
     '@nuxtjs/seo',
+    '@nuxtjs/i18n',
   ],
   devtools: { enabled: true },
   app: {

@@ -3,9 +3,12 @@ import { asOgImageCollection } from 'nuxt-og-image/content'
 
 export default defineContentConfig({
   collections: {
-    content: defineCollection(asOgImageCollection({
+    en: defineCollection(asOgImageCollection({
       type: 'page',
-      source: '**/*.md',
+      source: {
+        include: 'en/**',
+        exclude: ['**/.template/**'],
+      },
     })),
   },
 })
