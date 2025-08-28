@@ -12,3 +12,5 @@ export interface PlaygroundFeatures {
   download?: boolean
   navigation?: boolean
 }
+
+export type ContentLocale = 'en' | 'zh'

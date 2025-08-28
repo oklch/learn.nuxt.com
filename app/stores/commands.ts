@@ -1,3 +1,4 @@
+import type { ContentLocale } from '~/types/guides'
 import Fuse from 'fuse.js'
 
 export interface Command {
@@ -31,7 +32,7 @@ export const useCommandsStore = defineStore('commands', () => {
   const { locale } = useI18n()
 
   const { data: sections } = useAsyncData(`${locale.value}-search-sections`, () => {
-    return queryCollectionSearchSections(locale.value as 'en')
+    return queryCollectionSearchSections(locale.value as ContentLocale)
   })
 
   watch(debouncedSearch, async (v) => {

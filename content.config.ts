@@ -10,5 +10,12 @@ export default defineContentConfig({
         exclude: ['**/.template/**'],
       },
     })),
+    zh: defineCollection(asOgImageCollection({
+      type: 'page',
+      source: {
+        include: 'zh/**',
+        exclude: ['**/.template/**'],
+      },
+    })),
   },
 })

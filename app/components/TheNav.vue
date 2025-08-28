@@ -44,6 +44,17 @@ addCommands(
       return i18n.locale.value !== 'en'
     },
   },
+  {
+    id: 'language-zh',
+    title: '切换到中文',
+    handler: () => {
+      i18n.setLocale('zh')
+    },
+    icon: 'i-ph-globe-duotone',
+    visible: () => {
+      return i18n.locale.value !== 'zh'
+    },
+  },
 )
 </script>
 

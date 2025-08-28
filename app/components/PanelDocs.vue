@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
+import type { ContentLocale } from '~/types/guides'
+
+const { locale } = useI18n()
 
 const route = useRoute()
 const { data: page } = await useAsyncData(route.path, () => {
-  return queryCollection('content').path(route.path).first()
+  return queryCollection(locale.value as ContentLocale).path(route.path).first()
 }, { watch: [() => route.path] })
 
 useSeoMeta({
@@ -31,14 +34,12 @@ const sourceUrl = computed(() =>
 
 const ui = useUiStore()
 
-const { locale } = useI18n()
-
 const { data: navigation } = useAsyncData(`${locale.value}-navigation`, () => {
-  return queryCollectionNavigation(locale.value as 'en')
+  return queryCollectionNavigation(locale.value as ContentLocale)
 })
 
 const { data: surroundings } = useAsyncData(`${locale.value}-${route.path}-surroundings`, () => {
-  return queryCollectionItemSurroundings(locale.value as 'en', route.path, {
+  return queryCollectionItemSurroundings(locale.value as ContentLocale, route.path, {
     fields: ['title', 'description'],
   })
 }, { watch: [() => route.path] })
