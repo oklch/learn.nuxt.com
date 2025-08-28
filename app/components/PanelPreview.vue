@@ -24,6 +24,18 @@ function navigate() {
   if (activeElement instanceof HTMLElement)
     activeElement.blur()
 }
+
+watch(
+  () => guide.features.navigation,
+  (currNav, prevNav) => {
+    if ((currNav && !prevNav) || (!currNav && prevNav)) {
+      play.restartServer()
+      play.webcontainer?.fs.rm('/pages', { recursive: true })
+    }
+    if (currNav && !prevNav)
+      play.restartServer()
+  },
+)
 </script>
 
 <template>

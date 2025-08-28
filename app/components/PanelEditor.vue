@@ -63,7 +63,7 @@ const panelInitEditor = computed(() => isMounted.value || {
           <div i-ph-tree-structure-duotone />
           <span text-sm>{{ $t('files') }}</span>
         </div>
-        <div py2>
+        <div py2 of-auto>
           <PanelEditorFileSystemTree
             v-model="play.fileSelected"
             :directory="directory"

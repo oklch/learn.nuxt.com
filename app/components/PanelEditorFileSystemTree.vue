@@ -45,7 +45,7 @@ const folderCaret = computed(() => {
 </script>
 
 <template>
-  <div of-auto>
+  <div>
     <button
       v-if="name"
       text-sm px2 py1 text-left w-full
