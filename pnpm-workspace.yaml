@@ -8,6 +8,7 @@ catalogs:
     unocss: ^66.4.2
   dev:
     '@antfu/eslint-config': ^5.2.1
+    '@intlify/eslint-plugin-vue-i18n': ^4.1.0
     '@unocss/eslint-plugin': ^66.4.2
     eslint: ^9.33.0
     eslint-plugin-format: ^1.0.1

@@ -114,7 +114,7 @@ const panelInitTerminal = computed(() => isMounted.value || {
           <button
             flex="~ items-center justify-center"
             h-full w-full hover:bg-active
-            title="Close embedded docs"
+            :title="$t('close-embedded-docs')"
             @click="guide.embeddedDocs = ''"
           >
             <div i-ph-caret-left-bold h-4 w-4 />

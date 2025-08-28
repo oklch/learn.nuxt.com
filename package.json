@@ -42,6 +42,7 @@
     "@iconify-json/catppuccin": "catalog:icons",
     "@iconify-json/ph": "catalog:icons",
     "@iconify-json/svg-spinners": "catalog:icons",
+    "@intlify/eslint-plugin-vue-i18n": "catalog:dev",
     "@nuxt/content": "catalog:nuxt",
     "@nuxt/eslint": "catalog:nuxt",
     "@nuxtjs/color-mode": "catalog:nuxt",

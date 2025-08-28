@@ -43,9 +43,9 @@ function toggleMode(event: MouseEvent) {
 addCommands(
   {
     id: 'toggle-color-mode',
-    title: colorMode.value === 'light'
-      ? 'Switch to dark mode'
-      : 'Switch to light mode',
+    title: () => colorMode.value === 'light'
+      ? $t('color-mode.to-dark')
+      : $t('color-mode.to-light'),
     handler: () => toggleMode({
       clientX: window.innerWidth / 2,
       clientY: window.innerHeight / 2,

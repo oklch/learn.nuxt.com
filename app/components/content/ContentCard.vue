@@ -19,7 +19,7 @@ defineProps<{
     <div class="text-lg font-semibold my-0">
       {{ title }}
       <sup v-if="wip" text-sm text-primary font-normal px1 rounded bg-primary:10>
-        Coming Soon
+        {{ $t('coming-soon') }}
       </sup>
     </div>
     <div class="text-[15px] mb-0 mt-1 op50">

@@ -61,7 +61,7 @@ const panelInitEditor = computed(() => isMounted.value || {
           px4 py2 bg-faded
         >
           <div i-ph-tree-structure-duotone />
-          <span text-sm>Files</span>
+          <span text-sm>{{ $t('files') }}</span>
         </div>
         <div py2>
           <PanelEditorFileSystemTree

@@ -3,7 +3,7 @@ import Fuse from 'fuse.js'
 
 export interface Command {
   id?: string
-  title: string
+  title: string | (() => string)
   to?: string
   description?: string
   visible?: () => boolean

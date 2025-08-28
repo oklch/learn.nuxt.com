@@ -16,7 +16,7 @@ const i18n = useI18n()
 addCommands(
   {
     id: 'download-zip',
-    title: 'Download playground as ZIP',
+    title: () => $t('download-zip'),
     visible: () => {
       return play.status === 'ready' && guide.features.download !== false
     },
@@ -27,7 +27,7 @@ addCommands(
   },
   {
     id: 'toggle-terminal',
-    title: 'Toggle terminal',
+    title: () => $t('toggle-terminal'),
     handler: () => {
       ui.toggleTerminal()
     },
@@ -60,7 +60,7 @@ addCommands(
 
 <template>
   <nav flex="~ items-center" p="x4 y3" border="b base">
-    <NuxtLink to="/" title="Nuxt Tutorial">
+    <NuxtLink to="/" title="$t('nuxt-tutorial')">
       <NuxtTutorialLogo class="h-2em" />
     </NuxtLink>
     <NuxtLink
@@ -68,7 +68,7 @@ addCommands(
       target="_blank"
     >
       <div text-xs text-orange px2 py1 rounded bg-orange:10 block translate-y--2>
-        Work in Progress
+        {{ $t('work-in-progress') }}
       </div>
     </NuxtLink>
     <div flex-auto />
@@ -80,7 +80,7 @@ addCommands(
         v-if="play.status === 'ready' && guide.features.download !== false"
         p2 rounded
         hover="bg-active"
-        title="Download as ZIP"
+        :title="$t('download-zip')"
         @click="downloadZip(play.webcontainer!)"
       >
         <div i-ph-download-duotone text-2xl />
@@ -110,7 +110,7 @@ addCommands(
       <button
         p2 rounded
         hover="bg-active"
-        title="Search"
+        :title="$t('search')"
         @click="commands.isShown = true"
       >
         <div i-ph-magnifying-glass-duotone text-2xl />
@@ -119,16 +119,17 @@ addCommands(
         <button
           p2 rounded
           hover="bg-active"
-          title="Playground Information"
+          :title="$t('playground-information')"
         >
           <div i-ph-info-duotone text-2xl />
         </button>
         <template #popper>
           <div px5 py4 grid="~ gap-y-3 gap-x-2 cols-[max-content_1fr] items-center">
             <div i-ph-package-duotone text-xl />
-            <NuxtLink :to="`${runtime.public.repoUrl}/commit/${runtime.public.gitSha}`" target="_blank" title="View on GitHub">
+            <NuxtLink :to="`${runtime.public.repoUrl}/commit/${runtime.public.gitSha}`" target="_blank" :title="$t('view-on-github')">
               <time :datetime="buildTime.toISOString()" :title="buildTime.toLocaleString()">
-                Built {{ timeAgo }} (<code>{{ runtime.public.gitSha.slice(0, 5) }}</code>)
+                <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+                {{ $t('built') }} {{ timeAgo }} (<code>{{ runtime.public.gitSha.slice(0, 5) }}</code>)
               </time>
             </NuxtLink>
           </div>
@@ -136,7 +137,7 @@ addCommands(
       </VDropdown>
       <button
         p2 rounded
-        title="Toggle terminal"
+        :title="$t('toggle-terminal')"
         hover="bg-active"
         :class="ui.showTerminal ? '' : 'op50'"
         @click="ui.toggleTerminal()"

@@ -5,7 +5,7 @@ import type { ContentLocale } from '~/types/guides'
 const { locale } = useI18n()
 
 const route = useRoute()
-const { data: page } = await useAsyncData(route.path, () => {
+const { data: page } = await useAsyncData(`${locale.value}-${route.path}`, () => {
   return queryCollection(locale.value as ContentLocale).path(route.path).first()
 }, { watch: [() => route.path] })
 
@@ -83,7 +83,7 @@ const breadcrumbs = computed(() => {
 
   if (!breadcrumbs.find(i => i.path === '/')) {
     breadcrumbs.unshift({
-      title: 'Guide',
+      title: $t('guide'),
       path: '/',
     })
   }
@@ -129,7 +129,7 @@ router.beforeEach(() => {
               :to="prev.path"
               :title="prev.title"
               :description="prev.description as string"
-              subheader="Previous section"
+              :subheader="$t('previous-section')"
               icon="i-ph-arrow-left"
             />
           </div>
@@ -139,7 +139,7 @@ router.beforeEach(() => {
               :to="next.path"
               :title="next.title"
               :description="next.description as string"
-              subheader="Next section"
+              :subheader="$t('next-section')"
               icon="i-ph-arrow-right"
               text-right items-end
             />
@@ -154,7 +154,7 @@ router.beforeEach(() => {
             hover="text-primary op100"
           >
             <div i-ph-note-pencil-duotone />
-            Edit this page
+            {{ $t('edit-this-page') }}
           </NuxtLink>
         </div>
       </article>

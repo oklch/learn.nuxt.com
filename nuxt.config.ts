@@ -116,4 +116,26 @@ export default defineNuxtConfig({
       },
     },
   },
+  i18n: {
+    locales: [
+      {
+        name: 'English',
+        code: 'en',
+        file: 'en.yaml',
+      },
+      {
+        name: '中文',
+        code: 'zh',
+        file: 'zh.yaml',
+      },
+    ],
+    strategy: 'prefix',
+    defaultLocale: 'en',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+    },
+    autoDeclare: true,
+  },
 })

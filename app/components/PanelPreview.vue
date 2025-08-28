@@ -40,7 +40,7 @@ function navigate() {
         tracking-wide m1.5 px2 py0.5 rounded bg-faded
       >
         <div i-ph-globe-duotone />
-        <span text-sm op50>Preview</span>
+        <span text-sm op50>{{ $t('preview') }}</span>
         <div
           text-sm
           flex="~ items-center justify-center auto"
@@ -61,12 +61,12 @@ function navigate() {
         flex="~ gap-2 auto items-center" px2 py2
       >
         <div i-ph-globe-duotone />
-        <span text-sm>Preview</span>
+        <span text-sm>{{ $t('preview') }}</span>
       </div>
       <button
         p1 rounded
         hover="bg-active"
-        title="Refresh Preview"
+        :title="$t('refresh-preview')"
         @click="refreshIframe"
       >
         <div i-ph-arrow-clockwise-duotone text-lg />
@@ -75,7 +75,7 @@ function navigate() {
         <button
           p1 rounded
           hover="bg-active"
-          title="Playground Information"
+          :title="$t('playground-information')"
         >
           <div i-ph-info-duotone text-lg />
         </button>
@@ -83,14 +83,18 @@ function navigate() {
           <div px5 py4 grid="~ gap-y-3 gap-x-2 cols-[max-content_1fr] items-center">
             <div i-catppuccin-vue text-xl />
             <div flex="~ gap-2 items-center">
-              Vue version:
+              <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+              {{ $t('vue-version') }}:
+              <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
               <code>
                 v{{ preview.clientInfo!.versionVue }}
               </code>
             </div>
             <div i-catppuccin-nuxt text-xl />
             <div flex="~ gap-2 items-center">
-              Nuxt version:
+              <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+              {{ $t('nuxt-version') }}:
+              <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
               <code>
                 v{{ preview.clientInfo!.versionNuxt }}
               </code>

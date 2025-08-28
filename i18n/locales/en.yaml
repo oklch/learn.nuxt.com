@@ -1,0 +1,37 @@
+guide: Guide
+edit-this-page: Edit this page
+reset-challenge: Reset challenge
+show-solution: Show solution
+terminal:
+  restart: Restart terminal
+  name: Terminal
+  hide: Hide terminal
+coming-soon: Coming Soon
+previous-section: Previous section
+next-section: Next section
+close-embedded-docs: Close embedded docs
+refresh-preview: Refresh Preview
+playground-information: Playground Information
+nuxt-tutorial: Nuxt Tutorial
+search: Search
+toggle-terminal: Toggle terminal
+view-on-github: View on GitHub
+files: Files
+preview: Preview
+vue-version: Vue version
+nuxt-version: Nuxt version
+interactive-terminal-mode: Interactive terminal mode
+work-in-progress: Work in Progress
+built: Built
+search-dots: Search...
+color-mode:
+  to-dark: Switch to dark mode
+  to-light: Switch to light mode
+download-zip: Download Playground as ZIP
+restart-server: Restart the server
+steps:
+  initializing-webcontainer: Initializing WebContainer
+  mounting-files: Mounting files
+  installing-dependencies: Installing dependencies
+  starting-nuxt-server: Starting Nuxt server
+  waiting-for-nuxt-to-ready: Waiting for Nuxt to ready

@@ -1,0 +1,37 @@
+guide: 指南
+edit-this-page: 编辑此页面
+reset-challenge: 重置挑战
+show-solution: 显示解决方案
+terminal:
+  restart: 重启终端
+  name: 终端
+  hide: 隐藏终端
+coming-soon: 即将推出
+previous-section: 上一部分
+next-section: 下一部分
+close-embedded-docs: 关闭嵌入式文档
+refresh-preview: 刷新预览
+playground-information: Playground 信息
+nuxt-tutorial: Nuxt 教程
+search: 搜索
+toggle-terminal: 切换终端
+view-on-github: 在 GitHub 上查看
+files: 文件
+preview: 预览
+vue-version: Vue 版本
+nuxt-version: Nuxt 版本
+interactive-terminal-mode: 交互式终端模式
+work-in-progress: 进行中的工作
+built: 已构建
+search-dots: 搜索...
+color-mode:
+  to-dark: 切换到黑暗模式
+  to-light: 切换到亮色模式
+download-zip: 下载 Playground 为 ZIP
+restart-server: 重启服务器
+steps:
+  initializing-webcontainer: 初始化 WebContainer
+  mounting-files: 挂载文件
+  installing-dependencies: 安装依赖
+  starting-nuxt-server: 启动 Nuxt 服务器
+  waiting-for-nuxt-to-ready: 等待 Nuxt 准备就绪

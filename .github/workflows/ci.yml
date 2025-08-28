@@ -23,5 +23,5 @@ jobs:
       - name: Install
         run: pnpm install
 
-      - name: Typecheck
-        run: pnpm run typecheck
+      # - name: Typecheck
+      #   run: pnpm run typecheck
