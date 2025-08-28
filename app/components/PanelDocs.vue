@@ -7,7 +7,7 @@ const { locale } = useI18n()
 const route = useRoute()
 const { data: page } = await useAsyncData(`${locale.value}-${route.path}`, () => {
   return queryCollection(locale.value as ContentLocale).path(route.path).first()
-}, { watch: [() => route.path] })
+}, { watch: [() => [locale.value, route.path]] })
 
 useSeoMeta({
   title: page.value?.title,
@@ -36,13 +36,13 @@ const ui = useUiStore()
 
 const { data: navigation } = useAsyncData(`${locale.value}-navigation`, () => {
   return queryCollectionNavigation(locale.value as ContentLocale)
-})
+}, { watch: [() => locale.value] })
 
 const { data: surroundings } = useAsyncData(`${locale.value}-${route.path}-surroundings`, () => {
   return queryCollectionItemSurroundings(locale.value as ContentLocale, route.path, {
     fields: ['title', 'description'],
   })
-}, { watch: [() => route.path] })
+}, { watch: [() => [locale.value, route.path]] })
 const prev = computed(() => surroundings.value?.[0])
 const next = computed(() => surroundings.value?.[1])
 

@@ -1,4 +1,3 @@
-import { defineNuxtConfig } from 'nuxt/config'
 import { version as versionNuxt } from 'nuxt/package.json'
 import { version as versionVue } from 'vue'
 

@@ -2,13 +2,12 @@
   "name": "learn.nuxt.com",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "typecheck": "nuxt typecheck",
     "prepare": "nuxt prepare && pnpm -C ./app/templates/basic install && pnpm -C ./app/templates/basic prepare",
     "lint": "eslint .",
     "format": "eslint . --fix"
@@ -60,7 +59,6 @@
     "nuxt": "catalog:nuxt",
     "rehype-external-links": "catalog:build",
     "typescript": "catalog:dev",
-    "unocss": "catalog:build",
-    "vue-tsc": "catalog:dev"
+    "unocss": "catalog:build"
   }
 }
