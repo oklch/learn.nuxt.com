@@ -8,7 +8,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "prepare": "nuxt prepare && pnpm -C ./app/templates/basic install && pnpm -C ./app/templates/basic prepare",
+    "prepare": "nuxt prepare",
     "lint": "eslint .",
     "format": "eslint . --fix"
   },
