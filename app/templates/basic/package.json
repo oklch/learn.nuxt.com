@@ -6,7 +6,7 @@
     "prepare": "nuxt prepare"
   },
   "dependencies": {
-    "nuxt": "^3.18.1",
-    "vue": "^3.5.18"
+    "nuxt": "3.18.1",
+    "vue": "3.5.18"
   }
 }
